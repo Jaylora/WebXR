@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import *as dat from 'dat.gui';
 
 //Create Scene
 const scene = new THREE.Scene();
@@ -18,6 +19,20 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 const controls = new OrbitControls( camera, renderer.domElement );
+
+
+
+//Das Controllpanel
+const gui = new dat.GUI();
+const auswahlOptionen = {
+    cubeColor: '#005578'
+}
+
+gui.addColor(options, 'cubeColor').onChange(function(e){
+    cube.material.color.set(e);
+});
+
+//GEOMETRY
 
 
 const planegeometry = new THREE.PlaneGeometry( 10, 10,5,5 );
