@@ -22,11 +22,6 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 
 
-//Das Controllpanel
-const gui = new dat.GUI();
-const auswahlOptionen = {
-    cubeColor: '#005578'
-}
 
 gui.addColor(options, 'cubeColor').onChange(function(e){
     cube.material.color.set(e);
