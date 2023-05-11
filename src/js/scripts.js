@@ -12,10 +12,12 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 const myLight1 = new THREE.AmbientLight(0x404040, 3);
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 scene.add( directionalLight );
+directionalLight.castShadow = true;
 
 
 //Create Renderer
 const renderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled=true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -31,7 +33,7 @@ const plane = new THREE.Mesh( planegeometry, planematerial );
 plane.position.x = 0;
 plane.position.y = -1;
 plane.rotation.x = 90;
-
+plane.receiveShadow = true;
 
 //Create Geometry
 const cubegeometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -40,6 +42,7 @@ const cube = new THREE.Mesh( cubegeometry, cubematerial );
 scene.add( cube );
 scene.add( plane );
 scene.add(myLight1);
+cube.castShadow = true;
 
 
 window.addEventListener( 'resize', onWindowResize, false );
@@ -56,18 +59,41 @@ function onWindowResize(){
 camera.position.z = 5;
 controls.update();
 
+/*
+const gui2 = new GUI();
 
+const options ={
+    cubeColor: '#ffea00'
+}
 
-
+gui2.addColor(options, 'cubeColor').onChange(function(e){
+    cube.material.color.set(e);
+})
+    
+*/
 const gui = new GUI()
-const cubeFolder = gui.addFolder('Cube')
+const cubeFolder = gui.addFolder('Cube');
+const cameraFolder = gui.addFolder('Camera');
+const colorFolder = gui.addFolder('Color');
+cubeFolder.add(cube.position, 'x', 0, 10)
 cubeFolder.add(cube.rotation, 'x', 0, Math.PI * 2)
 cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2)
 cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2)
 cubeFolder.open()
-const cameraFolder = gui.addFolder('Camera')
+
+
 cameraFolder.add(camera.position, 'z', 0, 10)
 cameraFolder.open()
+
+const options ={
+        cubeColor: '#ffea00'
+    }
+    colorFolder.addColor(options, 'cubeColor').onChange(function(e){
+        cube.material.color.set(e);
+    })
+colorFolder.open()
+
+
 //GEOMETRY
 
 //Create Animation
