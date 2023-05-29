@@ -15,7 +15,7 @@ let cubeCamera;
 init();
 animate();
 setupXR();
-loadMyBlendFiles();
+
 
 
 function init(){
@@ -104,7 +104,12 @@ function init(){
     scene.add( plane );
     cube.castShadow = true;
     
-   
+
+var capsgeo = new THREE.CapsuleGeometry(0.2,0.2,2,6);
+var capsmat = new THREE.MeshLambertMaterial({color: 0x579547})
+   const grabcaps = new THREE.Mesh(  capsgeo, capsmat);
+   scene.add(grabcaps);
+   grabcaps.position.set(-1,1,-5);
 
     //Wand Texture
     const myTextureLoader = new THREE.TextureLoader();
@@ -326,16 +331,37 @@ myFackelloader.load(
     
     
     cubeCamera.update(renderer, scene);
+
+
+//Highlight onRaycaster
+
+const hightlight = new THREE.Mesh(capsgeo, new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.BackSide}));
+hightlight.scale.set(1.2,1.2,1.2);
+scene.add(hightlight);
 }
 
 
 
 function setupXR(){
+    const controllers = [];
     renderer.xr.enabled = true;
     document.body.appendChild( VRButton.createButton( renderer ) );
 
+    function onSelectStart(){
+        this.children[0].scale.z = 10;
+        this.userData.selectPressed = true;
+    }
 
+    function onSelectEnd(){
+        this.children[0].scale.z = 0;
+        hightlight.visible = false;
+        this.userData.selectPressed = false;
+    }
    
+    controllers.forEach((controller) => {
+        controller.addEventListener('selectstart', onSelectStart);
+        controller.addEventListener('selectend', onSelectEnd);
+    })
     const controllerModelFactory =new XRControllerModelFactory();
     
     const mygeometry = new THREE.BufferGeometry().setFromPoints([ 
@@ -345,8 +371,32 @@ function setupXR(){
     const line = new THREE.Line(mygeometry);
     line.name = 'line'
     line.scale.z = 0;
+   
+
+   function handleControllers(controller){
+        if (controller.userData.selectPressed){
+            controller.children[0].scale.z = 10;
+            workingMatrix.identity().extractRotation(contro.matrixWorld);
+            this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+            raycaster.ray.direction.set(0,0,-1).applyMatrix4(
+                controller.matrixWorld);
+            
+                const intersect = this.raycaster.intersectObjects(this.room.children);
     
-    const controllers = [];
+                if(intersects.length>0){
+                    intersects[0].object.add(this.hightlight);
+                    this.hightlight.visible = true;
+                    controller.children[0].scale.z = intersects[0].distance;
+                } else{
+                    hightlight.visible = false;
+                }
+        }
+
+
+    }
+    
+    
+   
     
     for(let i=0; i<1; i++){
     
