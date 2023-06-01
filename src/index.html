@@ -19,7 +19,12 @@
 	</head>
 	<body>
 		
-		<script type="module" src="./js/scripts.js" type="module"></script>
+		<script type="module"> import { App } from './js/scripts.js';
+		 
+		 document.addEventListener("DOMContentLoaded", function(){
+                const app = new App();
+                window.app = app;
+		 }); </script>
 
 	</body>
 </html>

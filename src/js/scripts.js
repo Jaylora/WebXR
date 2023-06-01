@@ -1,36 +1,96 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { VRButton } from 'three/addons/webxr/VRButton.js';
-import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import { GUI } from '../../node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+import { VRButton } from '../../node_modules/three/examples/jsm/webxr/VRButton.js';
+import { XRControllerModelFactory } from '../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { GLTFLoader } from '../../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { BoxLineGeometry } from '../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
 
-let container;
-let camera, scene, renderer;
+let camera,scene, renderer;
+let controls;
 let controllers;
-
-var clicked;
-let cubeCamera;
-
-init();
-animate();
-setupXR();
+let container;
+let highlight;
 
 
+class App{
+    constructor(){
+        container = document.createElement( 'div' );
+	    document.body.appendChild( container );
 
-function init(){
-    container = document.createElement( 'div' );
-	document.body.appendChild( container );
 
+        //CREATE CAMERA
+        camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        camera.position.set(0,1.6,8);
 
-    //CREATE SCENE
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x444444 );
-    //CREATE CAMERA
-    camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    camera.position.set(0,1.6,8);
+        //CREATE SCENE
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x444444 );
 
-    //Boden Texture
+       // CREATE LIGHT
+        const myLight1 = new THREE.AmbientLight(0x404040, 3);
+        scene.add(myLight1);
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+        scene.add( directionalLight );
+        const hemilight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+        scene.add( hemilight );
+
+        directionalLight.castShadow = true;
+        directionalLight.position.set(5,10,0);
+        directionalLight.target.position.set(4,3,-7.5);
+    
+        
+        directionalLight.shadow.mapSize.width = 512; // default
+        directionalLight.shadow.mapSize.height = 512; // default
+        directionalLight.shadow.camera.near = 0.5; // default
+        directionalLight.shadow.camera.far = 500; // default
+ 
+
+        const dirLightHelper = new THREE.DirectionalLightHelper(directionalLight,5);
+        scene.add(dirLightHelper);
+
+        //Renderer
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.shadowMap.enabled = true;
+
+        container.appendChild( renderer.domElement );
+
+        //Orbit Controlls
+
+        controls = new OrbitControls( camera, renderer.domElement );
+        controls.target.set( 0, 1.6,0 );
+        controls.update();
+
+       
+        
+        //Raycaster
+        this.raycaster = new THREE.Raycaster();
+        this.workingMatrix = new THREE.Matrix4;
+        this.workingVector = new THREE.Vector3;
+
+        this.initScene();
+        this.setupXR();
+
+        window.addEventListener( 'resize', this.onWindowResize );
+
+        window.addEventListener('resize', this.onWindowResize.bind(this) ); 
+        
+        renderer.setAnimationLoop( this.render.bind(this) );
+
+    }
+    initScene(){
+        this.room = new THREE.LineSegments(
+            new BoxLineGeometry( 100, 100, 100, 10, 10, 10 ),
+            new THREE.LineBasicMaterial( { color: 0x808080 } )
+        );
+this.room.geometry.translate( 0, 3, 0 );
+scene.add( this.room );
+
+const geometry = new THREE.IcosahedronBufferGeometry( this.radius, 2 );
+
+        //Boden Texture
     const myBodenTextureLoader = new THREE.TextureLoader();
     const BodenBaseColor = myBodenTextureLoader.load('textures/boden/Metal_ArtDeco_Tiles_001_basecolor.jpg');
     BodenBaseColor.wrapS = THREE.RepeatWrapping;
@@ -70,8 +130,11 @@ function init(){
         encoding: THREE.SRGBColorSpace
     })
 
+
     const cubeCamera = new THREE.CubeCamera(1,10000, cubeRenderTarget);
     //CREATE PLANE
+    
+
 
     //Der Boden ist keine Lava
     const plane = new THREE.Mesh( new THREE.PlaneGeometry( 10, 100,400,400 ), new THREE.MeshStandardMaterial( {
@@ -93,7 +156,6 @@ function init(){
     plane.rotation.set(Math.PI/2,0,0);
     plane.receiveShadow = true;
 
-
     //CREATE CUBE
 
     const cubegeometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -101,8 +163,8 @@ function init(){
     const cube = new THREE.Mesh( cubegeometry, cubematerial );
     scene.add( cube );
     plane.add(cubeCamera);
-    scene.add( plane );
-    cube.castShadow = true;
+   scene.add( plane );
+   cube.castShadow = true;
     
 
 var capsgeo = new THREE.CapsuleGeometry(0.2,0.2,2,6);
@@ -221,11 +283,11 @@ myFackelloader.load(
          model.position.set(5,5,5);
         
 
-         //GUI CHANGE
+         /*GUI CHANGE
          const meineFackel = gui.addFolder('Fackel');
          meineFackel.add(model.position, 'z', -10, 10);
          meineFackel.open();
-         
+         */
 
 	},
 	// called while loading is progressing
@@ -244,208 +306,154 @@ myFackelloader.load(
 
    console.log(myFackelloader);
 
+   const highlight = new THREE.Mesh(capsgeo, new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.BackSide}));
+   highlight.scale.set(1.2,1.2,1.2);
+   scene.add(highlight);
+    }
 
-
-
-  
-
-    //CREATE LIGHT
-    const myLight1 = new THREE.AmbientLight(0x404040, 3);
-    scene.add(myLight1);
-    const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    scene.add( directionalLight );
-    const hemilight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-    scene.add( hemilight );
-
-    directionalLight.castShadow = true;
-    directionalLight.position.set(5,10,0);
-    directionalLight.target.position.set(4,3,-7.5);
- 
-    
-    directionalLight.shadow.mapSize.width = 512; // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5; // default
-    directionalLight.shadow.camera.far = 500; // default
-
-
-
-
-   
-
-    const dirLightHelper = new THREE.DirectionalLightHelper(directionalLight,5);
-    scene.add(dirLightHelper);
-
-   
-    
-    //GUI
+    myGUI(){
+        //GUI
     const gui = new GUI()
     const cubeFolder = gui.addFolder('Cube');
     const cameraFolder = gui.addFolder('Camera');
     const colorFolder = gui.addFolder('Color');
    
 
-    cubeFolder.add(cube.position, 'x', -10, 10)
-    cubeFolder.add(cube.position, 'y', -10, 10)
-    cubeFolder.add(cube.position, 'z', -10, 10)
-    cubeFolder.add(cube.rotation, 'x', 0, Math.PI * 2)
-    cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2)
-    cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2)
+    cubeFolder.add(this.cube.position, 'x', -10, 10)
+    cubeFolder.add(this.cube.position, 'y', -10, 10)
+    cubeFolder.add(this.cube.position, 'z', -10, 10)
+    cubeFolder.add(this.cube.rotation, 'x', 0, Math.PI * 2)
+    cubeFolder.add(this.cube.rotation, 'y', 0, Math.PI * 2)
+    cubeFolder.add(this.cube.rotation, 'z', 0, Math.PI * 2)
     cubeFolder.open()
 
 
-    cameraFolder.add(camera.position, 'z', 0, 10)
+    cameraFolder.add(this.camera.position, 'z', 0, 10)
     cameraFolder.open()
 
     const options ={
             cubeColor: '#ffea00'
         }
         colorFolder.addColor(options, 'cubeColor').onChange(function(e){
-            cube.material.color.set(e);
+            this.cube.material.color.set(e);
         })
-    colorFolder.open()
-
-
-
-    //Renderer
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.shadowMap.enabled = true;
-    
-
-    container.appendChild( renderer.domElement );
-//Orbit Controlls
-
-    const controls = new OrbitControls( camera, renderer.domElement );
-	controls.target.set( 0, 1.6,0 );
-	controls.update();
-
-//Raycaster
-    const raycaster = new THREE.Raycaster();
-    const workingMatrix = new THREE.Matrix4;
-    const workingVector = new THREE.Vector3;
-  
-
-    window.addEventListener( 'resize', onWindowResize );
-
-    
-    
-    cubeCamera.update(renderer, scene);
-
-
-//Highlight onRaycaster
-
-const hightlight = new THREE.Mesh(capsgeo, new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.BackSide}));
-hightlight.scale.set(1.2,1.2,1.2);
-scene.add(hightlight);
-}
-
-
-
-function setupXR(){
-    const controllers = [];
-    renderer.xr.enabled = true;
-    document.body.appendChild( VRButton.createButton( renderer ) );
-
-    function onSelectStart(){
-        this.children[0].scale.z = 10;
-        this.userData.selectPressed = true;
+        colorFolder.open()
     }
 
-    function onSelectEnd(){
-        this.children[0].scale.z = 0;
-        hightlight.visible = false;
-        this.userData.selectPressed = false;
-    }
-   
-    controllers.forEach((controller) => {
-        controller.addEventListener('selectstart', onSelectStart);
-        controller.addEventListener('selectend', onSelectEnd);
-    })
-    const controllerModelFactory =new XRControllerModelFactory();
-    
-    const mygeometry = new THREE.BufferGeometry().setFromPoints([ 
-        new THREE.Vector3(0,0,0),
-        new THREE.Vector3(0,0,-1)
-    ]);
-    const line = new THREE.Line(mygeometry);
-    line.name = 'line'
-    line.scale.z = 0;
-   
 
-   function handleControllers(controller){
-        if (controller.userData.selectPressed){
-            controller.children[0].scale.z = 10;
-            workingMatrix.identity().extractRotation(contro.matrixWorld);
-            this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-            raycaster.ray.direction.set(0,0,-1).applyMatrix4(
-                controller.matrixWorld);
+    setupXR(){
+        renderer.xr.enabled = true;
+        document.body.appendChild( VRButton.createButton( renderer ) );
+        
+        const self = this;
+
+        controllers = this.buildControllers();
+       
+        
+        function onSelectStart(){
+            this.children[0].scale.z = 10;
+            this.userData.selectPressed = true;
+        }
+
+        function onSelectEnd(){
+            this.children[0].scale.z = 0;
+            self.highlight.visible = false;
+            this.userData.selectPressed = false;
+        }
+
+      
+
+
+        controllers.forEach((controller) => {
+            controller.addEventListener('selectstart', onSelectStart);
+            controller.addEventListener('selectend', onSelectEnd);
+        })
+    }
+
+
+    buildControllers(){
+    
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+
+        const line = new THREE.Line( geometry );
+        line.name = 'line';
+		line.scale.z = 0;
+        
+        const controllers = [];
+        
+        for(let i=0; i<=1; i++){
+            const controller = renderer.xr.getController( i );
+            controller.add( line.clone() );
+            controller.userData.selectPressed = false;
+            scene.add( controller );
             
-                const intersect = this.raycaster.intersectObjects(this.room.children);
+            controllers.push( controller );
+            
+            const grip = renderer.xr.getControllerGrip( i );
+            grip.add( controllerModelFactory.createControllerModel( grip ) );
+            scene.add( grip );
+        }
+        
+        return controllers;
     
-                if(intersects.length>0){
-                    intersects[0].object.add(this.hightlight);
-                    this.hightlight.visible = true;
-                    controller.children[0].scale.z = intersects[0].distance;
-                } else{
-                    hightlight.visible = false;
-                }
+
+
+    }
+
+    handleControllers(controller){
+        if (controller.userData.selectPressed ){
+            controller.children[0].scale.z = 10;
+
+            this.workingMatrix.identity().extractRotation( controller.matrixWorld );
+
+            this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+            this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.workingMatrix );
+
+            const intersects = this.raycaster.intersectObjects( this.room.children );
+
+            if (intersects.length>0){
+                intersects[0].object.add(this.highlight);
+                this.highlight.visible = true;
+                controller.children[0].scale.z = intersects[0].distance;
+            }else{
+                this.highlight.visible = false;
+            }
         }
 
 
     }
-    
-    
-   
-    
-    for(let i=0; i<1; i++){
-    
-        const controller = renderer.xr.getController (i);
-    
-        controller.add( line.clone());
-        controller.userData.selectPressed = false;
-        scene.add(controller);
-         
 
-        controllers.push (controller);
+
+    onWindowResize(){
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
     
-        const grip = renderer.xr.getControllerGrip(i);
-        grip.add(controllerModelFactory.createControllerModel(grip));
-        scene.add(grip);
+        renderer.setSize( window.innerWidth, window.innerHeight );
     
     }
+
+    render() {
+       
+        
     
-    return controllers;
-
-}
-   
-
-
-function onWindowResize(){
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-function animate(){
-    renderer.setAnimationLoop( render );
+        if(this.controllers){
+            const self = this;
+           this.controllers.forEach((controller) => {
+                self.handleControllers(controller)
+            });
+        } 
     
-    
+        renderer.render( scene, camera );
+    }
+
 
 }
 
-function render() {
-    
-    renderer.render( scene, camera );
-    if( controllers){
-        const self = this;
-       controllers.forEach((controller) => {
-            self.handleControllers(controller)
-        });
-    } 
+export { App };
 
-}
+
+
 
