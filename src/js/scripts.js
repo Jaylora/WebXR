@@ -11,6 +11,7 @@ let controls;
 let controllers;
 let container;
 let highlight;
+let cube;
 
 
 class App{
@@ -72,6 +73,7 @@ class App{
 
         this.initScene();
         this.setupXR();
+     
 
         window.addEventListener( 'resize', this.onWindowResize );
 
@@ -309,36 +311,38 @@ myFackelloader.load(
    const highlight = new THREE.Mesh(capsgeo, new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.BackSide}));
    highlight.scale.set(1.2,1.2,1.2);
    scene.add(highlight);
-    }
 
-    myGUI(){
-        //GUI
+
+    //GUI
     const gui = new GUI()
     const cubeFolder = gui.addFolder('Cube');
     const cameraFolder = gui.addFolder('Camera');
     const colorFolder = gui.addFolder('Color');
    
 
-    cubeFolder.add(this.cube.position, 'x', -10, 10)
-    cubeFolder.add(this.cube.position, 'y', -10, 10)
-    cubeFolder.add(this.cube.position, 'z', -10, 10)
-    cubeFolder.add(this.cube.rotation, 'x', 0, Math.PI * 2)
-    cubeFolder.add(this.cube.rotation, 'y', 0, Math.PI * 2)
-    cubeFolder.add(this.cube.rotation, 'z', 0, Math.PI * 2)
+    cubeFolder.add(cube.position, 'x', -10, 10)
+    cubeFolder.add(cube.position, 'y', -10, 10)
+    cubeFolder.add(cube.position, 'z', -10, 10)
+    cubeFolder.add(cube.rotation, 'x', 0, Math.PI * 2)
+    cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2)
+    cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2)
     cubeFolder.open()
 
 
-    cameraFolder.add(this.camera.position, 'z', 0, 10)
+    cameraFolder.add(camera.position, 'z', 0, 10)
     cameraFolder.open()
 
     const options ={
             cubeColor: '#ffea00'
         }
         colorFolder.addColor(options, 'cubeColor').onChange(function(e){
-            this.cube.material.color.set(e);
+            cube.material.color.set(e);
         })
         colorFolder.open()
+
     }
+
+
 
 
     setupXR(){
