@@ -7,7 +7,6 @@ import { GLTFLoader } from "../../node_modules/three/examples/jsm/loaders/GLTFLo
 import { BoxLineGeometry } from "../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js";
 import { Stats } from "../../node_modules/three/examples/jsm/libs/stats.module.js";
 
-
 class App {
   camera;
   scene;
@@ -15,7 +14,7 @@ class App {
   container;
   cube;
   orbitControls;
-
+  controllers;
   raycaster;
   workingMatrix;
   workingVector;
@@ -85,7 +84,7 @@ class App {
     this.workingVector = new THREE.Vector3();
 
     this.initScene();
-    this.dieDatenLaden();
+    this.loadMyFiles();
     this.setupXR();
     this.myGui();
 
@@ -245,9 +244,11 @@ class App {
     wand2.castShadow = true;
     wand2.receiveShadow = true;
 
+
     
+
   }
-  myGui(){
+  myGui() {
     //GUI
     const gui = new GUI();
     const cubeFolder = gui.addFolder("Cube");
@@ -272,54 +273,24 @@ class App {
       this.cube.material.color.set(e);
     });
     colorFolder.open();
-}
-  dieDatenLaden() {
-    var myModels = ["./textures/wand-door.glb", "./textures/Fackel.glb"];
+  }
+  loadMyFiles() {
+    var myModels = ["wand-door.glb", "Fackel.glb"];
 
     let me = this;
-    const myWandloader = new GLTFLoader();
+    const myGLTFloader = new GLTFLoader();
 
-    // const fs = require('fs')
-
-    // const meinpfad = './textures/';
-
+    const meinpfad = "./textures/";
+    
     for (let i = 0; i <= myModels.length - 1; i++) {
-      /*  dateipfad = meinpfad.myModels[i];
-            try{
-                if(fs.existsSync(dateipfad)){
-                    myWandloader.load(
-         
-                        dateipfad,                       
-                         function ( gltf ) {
-                             me.scene.add( gltf.scene );
-             
-                         gltf.scene; // THREE.Group
-                         gltf.cameras; // Array<THREE.Camera>
-                         gltf.asset; // Object
-                                             
-                     },
-                     function ( xhr ) {
-                         console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-             
-                     },
-                     function ( error ) {
-             
-                         console.log( 'An error happened' );
-                          }
-                     );
-                }} catch(err){
-                console.log('nope');
-            }
-
-
-            console.log(dateipfad);
-*/
-      myWandloader.load(
-        myModels[i],
+      var dateipfad = meinpfad + myModels[i];
+      
+      myGLTFloader.load(
+        dateipfad,
 
         function (gltf) {
           me.scene.add(gltf.scene);
-
+          
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
@@ -337,11 +308,38 @@ class App {
   setupXR() {
     this.renderer.xr.enabled = true;
     document.body.appendChild(VRButton.createButton(this.renderer));
+
+    this.controllers = this.buildControllers();
   }
 
-  buildControllers() {}
+  buildControllers() {
+    const controllerModelFactory = new XRControllerModelFactory();
 
-  handleController() {}
+        const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+
+        const line = new THREE.Line( geometry );
+        line.name = 'line';
+		line.scale.z = 10;
+        
+        const controllers = [];
+        
+        for(let i=0; i<=1; i++){
+            const controller = this.renderer.xr.getController( i );
+            controller.add( line.clone() );
+            controller.userData.selectPressed = false;
+            this.scene.add( controller );
+            
+            controllers.push( controller );
+            
+            const grip = this.renderer.xr.getControllerGrip( i );
+            grip.add( controllerModelFactory.createControllerModel( grip ) );
+            this.scene.add( grip );
+        }
+        
+        return controllers;
+  }
+
+  handleController(controller) {}
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -352,6 +350,13 @@ class App {
 
   render() {
     this.stats.update();
+
+    if (this.controllers) {
+      const self = this;
+      this.controllers.forEach((controller) => {
+        self.handleController(controller);
+      });
+    }
 
     this.renderer.render(this.scene, this.camera);
   }
