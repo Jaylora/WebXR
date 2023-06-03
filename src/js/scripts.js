@@ -18,6 +18,7 @@ class App {
   raycaster;
   workingMatrix;
   workingVector;
+  
   constructor() {
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
@@ -96,6 +97,31 @@ class App {
   }
 
   initScene() {
+    //CREATE CUBE
+    this.room = new THREE.LineSegments(
+       );
+   
+    this.scene.add( this.room );
+
+
+    const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cubematerial = new THREE.MeshLambertMaterial({
+      color: 0x00ff00,
+      transparent: true,
+      opacity: 1,
+      visible: true,
+    });
+ 
+    this.cube = new THREE.Mesh(boxgeometry, cubematerial);
+    this.room.add(this.cube);
+       this.cube.castShadow = true;
+
+    this.highlight = new THREE.Mesh(boxgeometry,
+    new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }));
+    this.highlight.scale.set(1.2, 1.2, 1.2);
+    
+
+   
     //Boden Texture
     const myBodenTextureLoader = new THREE.TextureLoader();
     const BodenBaseColor = myBodenTextureLoader.load(
@@ -173,16 +199,11 @@ class App {
     plane.position.z = -50;
     plane.rotation.set(Math.PI / 2, 0, 0);
     plane.receiveShadow = true;
-
-    //CREATE CUBE
-
-    const cubegeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubematerial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    this.cube = new THREE.Mesh(cubegeometry, cubematerial);
-    this.scene.add(this.cube);
-    plane.add(cubeCamera);
     this.scene.add(plane);
-    this.cube.castShadow = true;
+    plane.add(cubeCamera);
+
+   
+
 
     //Wand Texture
     const myTextureLoader = new THREE.TextureLoader();
@@ -243,17 +264,24 @@ class App {
     this.scene.add(wand2);
     wand2.castShadow = true;
     wand2.receiveShadow = true;
-
-
     
-
+    
   }
+
   myGui() {
-    //GUI
+    var gui = new GUI();
+
+    var cubeFolder = gui.addFolder("Change the Cube");
+    cubeFolder.add(this.cube.position, "z", -10, 10).listen();
+    cubeFolder.add(this.cube.material, "visible").listen();
+    cubeFolder.open();
+
+    /*GUI
     const gui = new GUI();
     const cubeFolder = gui.addFolder("Cube");
     const cameraFolder = gui.addFolder("Camera");
     const colorFolder = gui.addFolder("Color");
+    const fackelFolder = gui.addFolder("FackelFarbe");
 
     cubeFolder.add(this.cube.position, "x", -10, 10);
     cubeFolder.add(this.cube.position, "y", -10, 10);
@@ -261,6 +289,7 @@ class App {
     cubeFolder.add(this.cube.rotation, "x", 0, Math.PI * 2);
     cubeFolder.add(this.cube.rotation, "y", 0, Math.PI * 2);
     cubeFolder.add(this.cube.rotation, "z", 0, Math.PI * 2);
+ 
     cubeFolder.open();
 
     cameraFolder.add(this.camera.position, "z", 0, 10);
@@ -273,6 +302,7 @@ class App {
       this.cube.material.color.set(e);
     });
     colorFolder.open();
+   */
   }
   loadMyFiles() {
     var myModels = ["wand-door.glb", "Fackel.glb"];
@@ -281,22 +311,27 @@ class App {
     const myGLTFloader = new GLTFLoader();
 
     const meinpfad = "./textures/";
-    
+
     for (let i = 0; i <= myModels.length - 1; i++) {
       var dateipfad = meinpfad + myModels[i];
-      
+
       myGLTFloader.load(
         dateipfad,
 
         function (gltf) {
           me.scene.add(gltf.scene);
-          
+
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
+          var saythename = gltf.scene.getObjectsByProperty(myModels[i]);
+          console.log(saythename);
         },
         function (xhr) {
-          console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+          console.log(
+            ((xhr.loaded / xhr.total) * 100).toFixed() +
+              "% loaded" 
+          );
         },
         function (error) {
           console.log("An error happened");
@@ -310,36 +345,84 @@ class App {
     document.body.appendChild(VRButton.createButton(this.renderer));
 
     this.controllers = this.buildControllers();
+    const self = this;
+
+    function onSelectStart() {
+      this.children[0].scale.z = 10;
+      this.userData.selectPressed = true;
+    }
+
+    function onSelectEnd() {
+      this.children[0].scale.z = 0;
+      self.highlight.visible = false;
+      this.userData.selectPressed = false;
+    }
+
+    this.controllers.forEach((controller) => {
+      controller.addEventListener("selectstart", onSelectStart);
+      controller.addEventListener("selectend", onSelectEnd);
+    });
   }
 
   buildControllers() {
     const controllerModelFactory = new XRControllerModelFactory();
 
-        const geometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
+    const mygeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, -1),
+    ]);
 
-        const line = new THREE.Line( geometry );
-        line.name = 'line';
-		line.scale.z = 10;
-        
-        const controllers = [];
-        
-        for(let i=0; i<=1; i++){
-            const controller = this.renderer.xr.getController( i );
-            controller.add( line.clone() );
-            controller.userData.selectPressed = false;
-            this.scene.add( controller );
-            
-            controllers.push( controller );
-            
-            const grip = this.renderer.xr.getControllerGrip( i );
-            grip.add( controllerModelFactory.createControllerModel( grip ) );
-            this.scene.add( grip );
-        }
-        
-        return controllers;
+    const line = new THREE.Line(mygeometry);
+    line.name = "line";
+    line.scale.z = 0;
+
+    const controllers = [];
+
+    for (let i = 0; i <= 1; i++) {
+      const controller = this.renderer.xr.getController(i);
+      controller.add(line.clone());
+      controller.userData.selectPressed = false;
+      this.scene.add(controller);
+
+      controllers.push(controller);
+
+      const grip = this.renderer.xr.getControllerGrip(i);
+      grip.add(controllerModelFactory.createControllerModel(grip));
+      this.scene.add(grip);
+    }
+
+    return controllers;
   }
 
-  handleController(controller) {}
+  handleController(controller) {
+   if (controller.userData.selectPressed ){
+   
+            controller.children[0].scale.z = 10;
+            this.scene.add(this.highlight);
+            this.workingMatrix.identity().extractRotation( controller.matrixWorld );
+
+            this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+            this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.workingMatrix );
+
+            const intersects = this.raycaster.intersectObjects( this.room.children );
+            console.log('push');
+      
+           
+
+
+            if (intersects.length>0){
+                intersects[0].object.add(this.highlight);
+                this.highlight.visible = true;
+                console.log('visible = true')
+                controller.children[0].scale.z = intersects[0].distance;
+                
+            }else{
+                this.highlight.visible = false;
+                console.log('visible = false')
+            } 
+
+        }
+  };
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -351,12 +434,12 @@ class App {
   render() {
     this.stats.update();
 
-    if (this.controllers) {
+    if (this.controllers ){
       const self = this;
-      this.controllers.forEach((controller) => {
-        self.handleController(controller);
+      this.controllers.forEach( ( controller) => { 
+          self.handleController( controller ) 
       });
-    }
+  }
 
     this.renderer.render(this.scene, this.camera);
   }
