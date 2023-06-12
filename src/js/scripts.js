@@ -1,11 +1,18 @@
 import * as THREE from "three";
 import { OrbitControls } from "../../node_modules/three/examples/jsm/controls/OrbitControls.js";
+
 import { GUI } from "../../node_modules/three/examples/jsm/libs/lil-gui.module.min.js";
 import { VRButton } from "../../node_modules/three/examples/jsm/webxr/VRButton.js";
 import { XRControllerModelFactory } from "../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js";
 import { GLTFLoader } from "../../node_modules/three/examples/jsm/loaders/GLTFLoader.js";
 import { BoxLineGeometry } from "../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js";
 import { Stats } from "../../node_modules/three/examples/jsm/libs/stats.module.js";
+import {
+	Constants as MotionControllerConstants,
+	fetchProfile,
+	MotionController
+} from '../../node_modules/three/examples/jsm/libs/motion-controllers.module.js';
+
 
 class App {
   camera;
@@ -18,6 +25,7 @@ class App {
   raycaster;
   workingMatrix;
   workingVector;
+  candle;
   
   constructor() {
     this.container = document.createElement("div");
@@ -37,12 +45,48 @@ class App {
     this.scene.background = new THREE.Color(0x444444);
 
     // CREATE LIGHT
-    const myLight1 = new THREE.AmbientLight(0x404040, 3);
-    this.scene.add(myLight1);
+    //const myLight1 = new THREE.AmbientLight(0x404040, 3);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    this.scene.add(directionalLight);
     const hemilight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-    this.scene.add(hemilight);
+   
+
+    const candle = new THREE.PointLight( 0xff2000, 7, 8, 7 )
+    const candlebig = new THREE.PointLight( 0xffff00, 2, 8, 7 )
+    const candle2 = new THREE.PointLight( 0xff2000, 7, 8, 7 )
+    const candle2big = new THREE.PointLight( 0xffff00, 2, 8, 7 )
+
+
+   /* for (let i = 0; i<=3; i++){
+      this.candle = new THREE.PointLight( 0xff5000, i, 10,5 )
+      this.candlebig = new THREE.PointLight( 0xff8000, i, 5,2 )
+      console.log(i);
+    }
+this.candle.position.set( 4.5, 2.2, -4.1 );
+this.candlebig.position.set( 4.5, 2.2, -4.1 );
+
+for (let i = 0; i<=3; i++){
+  this.candle2 = new THREE.PointLight( 0xff5000, i, 10,5 )
+  console.log(i);
+}*/
+candle2.position.set( 4.5, 2.2, -1.8 );
+candle.position.set( 4.5, 2.2, -4.1 );
+candlebig.position.set( 4.5, 2.2, -4.1 );
+candle2big.position.set( 4.5, 2.2, -1.8 );
+  
+    
+    const sphereSize1 = 0.4;
+    const sphereSize2 = 1;
+    const candleHelper = new THREE.PointLightHelper(candle, sphereSize1)
+    const candleHelper2 = new THREE.PointLightHelper(candle2, sphereSize1)
+    const candlebigHelper = new THREE.PointLightHelper(candlebig, sphereSize2)
+    const candlebig2Helper = new THREE.PointLightHelper(candle2big, sphereSize2)
+    this.scene.add(candleHelper, candleHelper2, candlebigHelper, candlebig2Helper);
+    this.scene.add( candle, candle2, candlebig, candle2big );
+
+
+    this.scene.add(hemilight, directionalLight );
+
+    
 
     directionalLight.castShadow = true;
     directionalLight.position.set(5, 10, 0);
@@ -64,6 +108,7 @@ class App {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
+
 
     this.container.appendChild(this.renderer.domElement);
 
@@ -268,6 +313,22 @@ class App {
     
   }
 
+  createButtonStates(components){
+
+    const buttonStates = {};
+    this.gamepadIndices = components;
+    
+    Object.keys( components ).forEach( (key) => {
+        if ( key.indexOf('touchpad')!=-1 || key.indexOf('thumbstick')!=-1){
+            buttonStates[key] = { button: 0, xAxis: 0, yAxis: 0 };
+        }else{
+            buttonStates[key] = 0; 
+        }
+    })
+    
+    this.buttonStates = buttonStates;
+}
+
   myGui() {
     var gui = new GUI();
 
@@ -340,14 +401,18 @@ class App {
     }
   }
 
+
+
+  
+
   setupXR() {
     this.renderer.xr.enabled = true;
     document.body.appendChild(VRButton.createButton(this.renderer));
 
     this.controllers = this.buildControllers();
     const self = this;
-
-    function onSelectStart() {
+        
+   function onSelectStart() {
       this.children[0].scale.z = 10;
       this.userData.selectPressed = true;
     }
@@ -365,6 +430,7 @@ class App {
   }
 
   buildControllers() {
+    
     const controllerModelFactory = new XRControllerModelFactory();
 
     const mygeometry = new THREE.BufferGeometry().setFromPoints([
@@ -393,6 +459,8 @@ class App {
 
     return controllers;
   }
+
+ 
 
   handleController(controller) {
    if (controller.userData.selectPressed ){
@@ -443,6 +511,7 @@ class App {
 
     this.renderer.render(this.scene, this.camera);
   }
-}
+ }
+
 
 export { App };
