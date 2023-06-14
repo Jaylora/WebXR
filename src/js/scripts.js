@@ -26,6 +26,7 @@ class App {
   workingMatrix;
   workingVector;
   candle;
+
   
   constructor() {
     this.container = document.createElement("div");
@@ -366,11 +367,11 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
    */
   }
   loadMyFiles() {
-    var myModels = ["wand-door.glb", "Fackel.glb"];
+    var myModels = ["wand-door.glb", "Fackel.glb", "Fackel2.glb"];
 
     let me = this;
     const myGLTFloader = new GLTFLoader();
-
+   
     const meinpfad = "./textures/";
 
     for (let i = 0; i <= myModels.length - 1; i++) {
@@ -380,13 +381,26 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
         dateipfad,
 
         function (gltf) {
+          
           me.scene.add(gltf.scene);
 
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
-          var saythename = gltf.scene.getObjectsByProperty(myModels[i]);
+          const mygltf = gltf.scene;
+          var saythename = mygltf.getObjectsByProperty(myModels[i]);
           console.log(saythename);
+          
+         /* const fackel = mygltf.getObjectByName('dieFackel');
+
+          const copie = Object.assign({}, fackel);
+          console.log(copie);
+          copie.position.set(2,2,2);
+
+          
+          fackel.position.set(0,0,0);
+         */
+
         },
         function (xhr) {
           console.log(
@@ -398,10 +412,17 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
           console.log("An error happened");
         }
       );
+      //myModels[2].position.set(0,0,0);
     }
+   
+
   }
 
+  test(){
 
+
+
+  }
 
   
 
