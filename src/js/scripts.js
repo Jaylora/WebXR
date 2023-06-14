@@ -311,7 +311,27 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     wand2.castShadow = true;
     wand2.receiveShadow = true;
     
-    
+    const wand3 = new THREE.Mesh(
+      new THREE.PlaneGeometry(100, 5, 400, 400),
+      new THREE.MeshStandardMaterial({
+        side: THREE.DoubleSide,
+        map: tilesBaseColor,
+        normalMap: tilesNormalMap,
+        displacementMap: tilesHeightMap,
+        displacementScale: 0.7,
+        roughnessMap: tilesRoughnessMap,
+        roughness: 1,
+        aoMap: tilesAmbientOcclusionMap,
+      })
+    );
+    wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
+    wand3.position.x = -4.2;
+    wand3.position.z = -50;
+    wand3.position.y = 1;
+    wand3.rotation.set(Math.PI / 1, 4.72, 0.005);
+    this.scene.add(wand3);
+    wand3.castShadow = true;
+    wand3.receiveShadow = true;
   }
 
   createButtonStates(components){
@@ -367,13 +387,13 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
    */
   }
   loadMyFiles() {
-    var myModels = ["wand-door.glb", "Fackel.glb", "Fackel2.glb"];
+    var myModels = ["wand-door.glb", "Fackel.glb","Fackel2.glb", "door.glb"];
 
     let me = this;
     const myGLTFloader = new GLTFLoader();
    
     const meinpfad = "./textures/";
-
+    
     for (let i = 0; i <= myModels.length - 1; i++) {
       var dateipfad = meinpfad + myModels[i];
 
@@ -383,23 +403,18 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
         function (gltf) {
           
           me.scene.add(gltf.scene);
-
+          const mygltf = gltf.scene;
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
-          const mygltf = gltf.scene;
+         
           var saythename = mygltf.getObjectsByProperty(myModels[i]);
           console.log(saythename);
           
-         /* const fackel = mygltf.getObjectByName('dieFackel');
-
-          const copie = Object.assign({}, fackel);
-          console.log(copie);
-          copie.position.set(2,2,2);
-
-          
+         /* const fackel = mygltf.getObjectById(74);
+  
           fackel.position.set(0,0,0);
-         */
+          console.log(fackel.position);*/
 
         },
         function (xhr) {
@@ -410,19 +425,19 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
         },
         function (error) {
           console.log("An error happened");
+        },
+        function test(){
+
+    
+    
         }
-      );
-      //myModels[2].position.set(0,0,0);
+        
+      );   
+
     }
-   
-
   }
 
-  test(){
-
-
-
-  }
+ 
 
   
 
