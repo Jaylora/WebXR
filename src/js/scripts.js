@@ -411,10 +411,12 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
           var saythename = mygltf.getObjectsByProperty(myModels[i]);
           console.log(saythename);
           
-         /* const fackel = mygltf.getObjectById(74);
+          
+         const  fackel = mygltf.getObjectById(74);
   
-          fackel.position.set(0,0,0);
-          console.log(fackel.position);*/
+          fackel.position.y =5 ;
+          console.log(fackel.position);
+          
 
         },
         function (xhr) {
