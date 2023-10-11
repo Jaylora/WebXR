@@ -26,6 +26,9 @@ class App {
   workingMatrix;
   workingVector;
   candle;
+  object;
+
+  
 
   
   constructor() {
@@ -134,6 +137,9 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     this.loadMyFiles();
     this.setupXR();
     this.myGui();
+    
+    
+    
 
     window.addEventListener("resize", this.onWindowResize);
 
@@ -151,22 +157,63 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 
 
     const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubematerial = new THREE.MeshLambertMaterial({
-      color: 0x00ff00,
-      transparent: true,
-      opacity: 1,
-      visible: true,
+    const cubematerial = new THREE.MeshPhongMaterial({
+      color: new THREE.Color("rgb(186, 102, 13)"),
+    specular: new THREE.Color("rgb(186, 13, 13)"),
+    shininess: 10,
+    shading: THREE.FlatShading,
+    transparent: 1,
+    opacity: 1
     });
- 
+    
+   
+
+    
+
     this.cube = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube);
-       this.cube.castShadow = true;
+    this.cube.castShadow = true;
 
     this.highlight = new THREE.Mesh(boxgeometry,
     new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }));
     this.highlight.scale.set(1.2, 1.2, 1.2);
+
+    const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
+    const doormat = new THREE.MeshLambertMaterial({
+      color: 0xff0000
+    });
+
+    this.door = new THREE.Mesh(doorgeo, doormat);
+    this.room.add(this.door);
+    this.door.position.set(0,0.5,-8);
+    
+        this.door.castShadow = true;
+
+
+        // Den Cube immer wo anders hin
+    let xPos = THREE.MathUtils.randFloat(-5, 5);
+    let zPos = THREE.MathUtils.randFloat(-6,0);
+    let yPos = THREE.MathUtils.randFloat(0, 2);
+
+    this.cube.position.set(xPos, yPos, zPos);
+
     
 
+     // Hier wird random gewürfelt
+
+     var boxGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+     for (var i=0; i<50; i++) {
+       const box = new THREE.Mesh(boxGeo, cubematerial);
+       box.position.x = Math.random() * 10 - 4;
+       box.position.y = Math.random() * 5 - 1;
+       box.position.z = Math.random() * 8 - 8;
+       this.scene.add(box);
+     }
+     
+
+     
+        const axesHelper = new THREE.AxesHelper( 5 );
+        this.scene.add( axesHelper );
    
     //Boden Texture
     const myBodenTextureLoader = new THREE.TextureLoader();
@@ -332,8 +379,12 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     this.scene.add(wand3);
     wand3.castShadow = true;
     wand3.receiveShadow = true;
+
+    
   }
 
+  
+  
   createButtonStates(components){
 
     const buttonStates = {};
@@ -403,20 +454,22 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
         function (gltf) {
           
           me.scene.add(gltf.scene);
-          const mygltf = gltf.scene;
+           var mygltf = gltf.scene;
+
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
          
           var saythename = mygltf.getObjectsByProperty(myModels[i]);
           console.log(saythename);
+
           
-          
-         const  fackel = mygltf.getObjectById(74);
-  
-          fackel.position.y =5 ;
-          console.log(fackel.position);
-          
+         
+         const mydoor = mygltf.getObjectByName("door");
+         
+         //mydoor.position.set(0,1,-8);
+         console.log(mydoor);
+        
 
         },
         function (xhr) {
@@ -430,18 +483,29 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
         },
         function test(){
 
+          
     
     
         }
         
+        
+        
       );   
-
+      
+      
     }
+    
   }
 
+  newShit(){
+    function myNewFunction(givethenames) {
+      console.log("NEW");
+      console.log(givethenames);
+    }
+  }
  
-
-  
+ 
+   
 
   setupXR() {
     this.renderer.xr.enabled = true;
@@ -521,6 +585,8 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
                 this.highlight.visible = true;
                 console.log('visible = true')
                 controller.children[0].scale.z = intersects[0].distance;
+                this.door.rotation.set(0,1.5,0);
+    this.door.position.set(-0.7,0.5,-8.5)
                 
             }else{
                 this.highlight.visible = false;
