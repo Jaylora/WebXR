@@ -149,14 +149,17 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
   }
 
   initScene() {
-    //CREATE CUBE
+    
     this.room = new THREE.LineSegments(
        );
    
     this.scene.add( this.room );
 
-
+//CREATE CUBE TO INTERACT
     const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
+    const boxgeometry2 = new THREE.BoxGeometry(1,1,1);
+
+// CREATE CUBE TO INTERACT MATERIAL
     const cubematerial = new THREE.MeshPhongMaterial({
       color: new THREE.Color("rgb(186, 102, 13)"),
     specular: new THREE.Color("rgb(186, 13, 13)"),
@@ -166,19 +169,40 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     opacity: 1
     });
     
-   
+    const cubematerial2 = new THREE.MeshPhongMaterial({
+      color: new THREE.Color("rgb(20, 102, 13)"),
+    specular: new THREE.Color("rgb(186, 13, 13)"),
+    shininess: 10,
+    shading: THREE.FlatShading,
+    transparent: 1,
+    opacity: 1
+    });
 
     
-
+//COMBINE CUBE TO INTERACT WITH MATERIAL
     this.cube = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube);
     this.cube.castShadow = true;
+    this.cube.name ="cube1"
+
+    this.cube2 = new THREE.Mesh(boxgeometry2, cubematerial2);
+    this.room.add(this.cube2);
+    this.cube2.castShadow = true;
+    this.cube2.name ="cube2"
+
+
 
     this.highlight = new THREE.Mesh(boxgeometry,
     new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }));
     this.highlight.scale.set(1.2, 1.2, 1.2);
 
-    const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
+
+
+    this.highlight2 = new THREE.Mesh(boxgeometry2,
+    new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide }));
+    this.highlight2.scale.set(1.2, 1.2, 1.2);
+
+   /* const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
     const doormat = new THREE.MeshLambertMaterial({
       color: 0xff0000
     });
@@ -188,19 +212,23 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     this.door.position.set(0,0.5,-8);
     
         this.door.castShadow = true;
+*/
 
-
-        // Den Cube immer wo anders hin
+     /*   // Den Cube immer wo anders hin
     let xPos = THREE.MathUtils.randFloat(-5, 5);
     let zPos = THREE.MathUtils.randFloat(-6,0);
     let yPos = THREE.MathUtils.randFloat(0, 2);
 
     this.cube.position.set(xPos, yPos, zPos);
+*/
 
+
+this.cube.position.set(-3,0,-4);
+this.cube2.position.set(3,0,-4);
     
 
      // Hier wird random gewürfelt
-
+/*
      var boxGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
      for (var i=0; i<50; i++) {
        const box = new THREE.Mesh(boxGeo, cubematerial);
@@ -211,7 +239,9 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
      }
      
 
-     
+     */
+
+     //HILFE ACHSEN
         const axesHelper = new THREE.AxesHelper( 5 );
         this.scene.add( axesHelper );
    
@@ -267,7 +297,16 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
       encoding: THREE.SRGBColorSpace,
     });
 
+    const cubeRenderTarget2 = new THREE.WebGLCubeRenderTarget(128, {
+      format: THREE.RGBAFormat,
+      generateMipmaps: true,
+      minFilter: THREE.LinearMipmapLinearFilter,
+      encoding: THREE.SRGBColorSpace,
+    });
+
+
     const cubeCamera = new THREE.CubeCamera(1, 10000, cubeRenderTarget);
+    const cubeCamera2 = new THREE.CubeCamera(1,10000, cubeRenderTarget2);
     //CREATE PLANE
 
     //Der Boden ist keine Lava
@@ -294,6 +333,7 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     plane.receiveShadow = true;
     this.scene.add(plane);
     plane.add(cubeCamera);
+    plane.add(cubeCamera2);
 
    
 
@@ -402,13 +442,14 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 }
 
   myGui() {
+    /*
     var gui = new GUI();
 
     var cubeFolder = gui.addFolder("Change the Cube");
     cubeFolder.add(this.cube.position, "z", -10, 10).listen();
     cubeFolder.add(this.cube.material, "visible").listen();
     cubeFolder.open();
-
+*/
     /*GUI
     const gui = new GUI();
     const cubeFolder = gui.addFolder("Cube");
@@ -496,13 +537,6 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     }
     
   }
-
-  newShit(){
-    function myNewFunction(givethenames) {
-      console.log("NEW");
-      console.log(givethenames);
-    }
-  }
  
  
    
@@ -521,8 +555,13 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 
     function onSelectEnd() {
       this.children[0].scale.z = 0;
+        //BAUSTELLE
       self.highlight.visible = false;
-      this.userData.selectPressed = false;
+/*
+      self.highlight2.visible = false;
+     
+*/
+this.userData.selectPressed = false;
     }
 
     this.controllers.forEach((controller) => {
@@ -565,35 +604,59 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
  
 
   handleController(controller) {
+
+
    if (controller.userData.selectPressed ){
    
             controller.children[0].scale.z = 10;
             this.scene.add(this.highlight);
+          /* this.scene.add(this.highlight2); */
             this.workingMatrix.identity().extractRotation( controller.matrixWorld );
 
             this.raycaster.ray.origin.setFromMatrixPosition( controller.matrixWorld );
             this.raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.workingMatrix );
 
-            const intersects = this.raycaster.intersectObjects( this.room.children );
-            console.log('push');
+            //const intersects2 = this.raycaster.intersectObject(this.room.children[0]); //cube
+            const intersects = this.raycaster.intersectObjects( this.room.children); //cube2
+
+
+            console.log(this.room.children[0]);
+            console.log(intersects);
       
            
 
+  
 
-            if (intersects.length>0){
+
+            if ( intersects.length>0 ){
+
+              
                 intersects[0].object.add(this.highlight);
                 this.highlight.visible = true;
-                console.log('visible = true')
+                console.log('controller geht');
+                console.log(intersects[0]);
                 controller.children[0].scale.z = intersects[0].distance;
-                this.door.rotation.set(0,1.5,0);
-    this.door.position.set(-0.7,0.5,-8.5)
-                
-            }else{
+                intersects[0].object.position.set(0,0,0);                
+
+                if(this.highlight.visible == false){
+                  intersects[0].object.position.set(1,1,1); 
+                  console.log("ZURÜCKGESETZT");
+                }
+
+            } 
+            else{
                 this.highlight.visible = false;
-                console.log('visible = false')
+                console.log('controller geht nicht')
+
+             /*   this.highlight2.visible = false;
+                console.log('highlight 2 geht nicht')*/
+
             } 
 
-        }
+            
+          }
+
+        
   };
 
   onWindowResize() {
