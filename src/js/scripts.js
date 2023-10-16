@@ -12,7 +12,7 @@ import {
 	fetchProfile,
 	MotionController
 } from '../../node_modules/three/examples/jsm/libs/motion-controllers.module.js';
-
+import * as TWEEN from '/../node_modules/@tweenjs/tween.js/dist/tween.esm.js';
 
 class App {
   camera;
@@ -29,8 +29,7 @@ class App {
   workingVector;
   candle;
   object;
-door;
-mydoor;
+
   
 
   
@@ -63,18 +62,7 @@ mydoor;
     const candle2big = new THREE.PointLight( 0xffff00, 2, 8, 7 )
 
 
-   /* for (let i = 0; i<=3; i++){
-      this.candle = new THREE.PointLight( 0xff5000, i, 10,5 )
-      this.candlebig = new THREE.PointLight( 0xff8000, i, 5,2 )
-      console.log(i);
-    }
-this.candle.position.set( 4.5, 2.2, -4.1 );
-this.candlebig.position.set( 4.5, 2.2, -4.1 );
-
-for (let i = 0; i<=3; i++){
-  this.candle2 = new THREE.PointLight( 0xff5000, i, 10,5 )
-  console.log(i);
-}*/
+   
 candle2.position.set( 4.5, 2.2, -1.8 );
 candle.position.set( 4.5, 2.2, -4.1 );
 candlebig.position.set( 4.5, 2.2, -4.1 );
@@ -104,6 +92,7 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     directionalLight.shadow.camera.near = 0.5; // default
     directionalLight.shadow.camera.far = 500; // default
 
+    //HILFE
     const dirLightHelper = new THREE.DirectionalLightHelper(
       directionalLight,
       5
@@ -140,6 +129,7 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     this.loadMyFiles();
     this.setupXR();
     this.myGui();
+    this.mytextures();
     
     
     
@@ -213,228 +203,203 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide }));
     this.highlight2.scale.set(1.2, 1.2, 1.2);
 
-   /* const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
-    const doormat = new THREE.MeshLambertMaterial({
-      color: 0xff0000
-    });
-
-    this.door = new THREE.Mesh(doorgeo, doormat);
-    this.room.add(this.door);
-    this.door.position.set(0,0.5,-8);
-    
-        this.door.castShadow = true;
-*/
-
-     /*   // Den Cube immer wo anders hin
-    let xPos = THREE.MathUtils.randFloat(-5, 5);
-    let zPos = THREE.MathUtils.randFloat(-6,0);
-    let yPos = THREE.MathUtils.randFloat(0, 2);
-
-    this.cube.position.set(xPos, yPos, zPos);
-*/
-
+   
 
 this.cube.position.set(-3,0,-4);
 this.cube2.position.set(3,0,-4);
 this.cube3.position.set(1,1,1);
     
 
-     // Hier wird random gewürfelt
-/*
-     var boxGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-     for (var i=0; i<50; i++) {
-       const box = new THREE.Mesh(boxGeo, cubematerial);
-       box.position.x = Math.random() * 10 - 4;
-       box.position.y = Math.random() * 5 - 1;
-       box.position.z = Math.random() * 8 - 8;
-       this.scene.add(box);
-     }
-     
-
-     */
-
-     //HILFE ACHSEN
+         //HILFE 
         const axesHelper = new THREE.AxesHelper( 5 );
         this.scene.add( axesHelper );
+
+
+        
+  
    
-    //Boden Texture
-    const myBodenTextureLoader = new THREE.TextureLoader();
-    const BodenBaseColor = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_basecolor.jpg"
-    );
-    BodenBaseColor.wrapS = THREE.RepeatWrapping;
-    BodenBaseColor.wrapT = THREE.RepeatWrapping;
-    BodenBaseColor.repeat.set(2, 25);
-
-    const BodenNormalMap = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_normal.jpg"
-    );
-    BodenNormalMap.wrapS = THREE.RepeatWrapping;
-    BodenNormalMap.wrapT = THREE.RepeatWrapping;
-    BodenNormalMap.repeat.set(2, 25);
-
-    const BodenHeightMap = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_height.png"
-    );
-    BodenHeightMap.wrapS = THREE.RepeatWrapping;
-    BodenHeightMap.wrapT = THREE.RepeatWrapping;
-    BodenHeightMap.repeat.set(2, 25);
-
-    const BodenRoughnessMap = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_roughness.jpg"
-    );
-    BodenRoughnessMap.wrapS = THREE.RepeatWrapping;
-    BodenRoughnessMap.wrapT = THREE.RepeatWrapping;
-    BodenRoughnessMap.repeat.set(2, 25);
-
-    const BodenAmbientOcclusionMap = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_ambientOcclusion.jpg"
-    );
-    BodenAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
-    BodenAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
-    BodenAmbientOcclusionMap.repeat.set(2, 25);
-
-    const BodenMetalic = myBodenTextureLoader.load(
-      "textures/boden/Metal_ArtDeco_Tiles_001_metallic.jpg"
-    );
-    BodenMetalic.wrapS = THREE.RepeatWrapping;
-    BodenMetalic.wrapT = THREE.RepeatWrapping;
-    BodenMetalic.repeat.set(2, 25);
-
-    //irgendwas mit metall
-    const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
-      format: THREE.RGBAFormat,
-      generateMipmaps: true,
-      minFilter: THREE.LinearMipmapLinearFilter,
-      encoding: THREE.SRGBColorSpace,
-    });
-
-    const cubeRenderTarget2 = new THREE.WebGLCubeRenderTarget(128, {
-      format: THREE.RGBAFormat,
-      generateMipmaps: true,
-      minFilter: THREE.LinearMipmapLinearFilter,
-      encoding: THREE.SRGBColorSpace,
-    });
-
-
-    const cubeCamera = new THREE.CubeCamera(1, 10000, cubeRenderTarget);
-    const cubeCamera2 = new THREE.CubeCamera(1,10000, cubeRenderTarget2);
-    //CREATE PLANE
-
-    //Der Boden ist keine Lava
-    const plane = new THREE.Mesh(
-      new THREE.PlaneGeometry(10, 100, 400, 400),
-      new THREE.MeshStandardMaterial({
-        side: THREE.DoubleSide,
-        map: BodenBaseColor,
-        normalMap: BodenNormalMap,
-        displacementMap: BodenHeightMap,
-        displacementScale: 0.7,
-        roughnessMap: BodenRoughnessMap,
-        roughness: 1,
-        aoMap: BodenAmbientOcclusionMap,
-        metalnessMap: BodenMetalic,
-        metalness: 1,
-        envMap: cubeRenderTarget.texture,
-      })
-    );
-    plane.position.x = 0;
-    plane.position.y = -1;
-    plane.position.z = -50;
-    plane.rotation.set(Math.PI / 2, 0, 0);
-    plane.receiveShadow = true;
-    this.scene.add(plane);
-    plane.add(cubeCamera);
-    plane.add(cubeCamera2);
-
-   
-
-
-    //Wand Texture
-    const myTextureLoader = new THREE.TextureLoader();
-    const tilesBaseColor = myTextureLoader.load(
-      "textures/Stone_Floor_006_basecolor.jpg"
-    );
-    tilesBaseColor.wrapS = THREE.RepeatWrapping;
-    tilesBaseColor.wrapT = THREE.RepeatWrapping;
-    tilesBaseColor.repeat.set(25, 1);
-
-    const tilesNormalMap = myTextureLoader.load(
-      "textures/Stone_Floor_006_normal.jpg"
-    );
-    tilesNormalMap.wrapS = THREE.RepeatWrapping;
-    tilesNormalMap.wrapT = THREE.RepeatWrapping;
-    tilesNormalMap.repeat.set(25, 1);
-
-    const tilesHeightMap = myTextureLoader.load(
-      "textures/Stone_Floor_006_height.png"
-    );
-    tilesHeightMap.wrapS = THREE.RepeatWrapping;
-    tilesHeightMap.wrapT = THREE.RepeatWrapping;
-    tilesHeightMap.repeat.set(25, 1);
-
-    const tilesRoughnessMap = myTextureLoader.load(
-      "textures/Stone_Floor_006_roughness.jpg"
-    );
-    tilesRoughnessMap.wrapS = THREE.RepeatWrapping;
-    tilesRoughnessMap.wrapT = THREE.RepeatWrapping;
-    tilesRoughnessMap.repeat.set(25, 1);
-
-    const tilesAmbientOcclusionMap = myTextureLoader.load(
-      "textures/Stone_Floor_006_ambientOcclusion.jpg"
-    );
-    tilesAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
-    tilesAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
-    tilesAmbientOcclusionMap.repeat.set(25, 1);
-
-    //Wand
-    const wand2 = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 5, 400, 400),
-      new THREE.MeshStandardMaterial({
-        side: THREE.DoubleSide,
-        map: tilesBaseColor,
-        normalMap: tilesNormalMap,
-        displacementMap: tilesHeightMap,
-        displacementScale: 0.7,
-        roughnessMap: tilesRoughnessMap,
-        roughness: 1,
-        aoMap: tilesAmbientOcclusionMap,
-      })
-    );
-    wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
-    wand2.position.x = 5.5;
-    wand2.position.z = -50;
-    wand2.position.y = 1;
-    wand2.rotation.set(Math.PI / 1, 4.72, 0.005);
-    this.scene.add(wand2);
-    wand2.castShadow = true;
-    wand2.receiveShadow = true;
     
-    const wand3 = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 5, 400, 400),
-      new THREE.MeshStandardMaterial({
-        side: THREE.DoubleSide,
-        map: tilesBaseColor,
-        normalMap: tilesNormalMap,
-        displacementMap: tilesHeightMap,
-        displacementScale: 0.7,
-        roughnessMap: tilesRoughnessMap,
-        roughness: 1,
-        aoMap: tilesAmbientOcclusionMap,
-      })
-    );
-    wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
-    wand3.position.x = -4.2;
-    wand3.position.z = -50;
-    wand3.position.y = 1;
-    wand3.rotation.set(Math.PI / 1, 4.72, 0.005);
-    this.scene.add(wand3);
-    wand3.castShadow = true;
-    wand3.receiveShadow = true;
 
     
   }
 
+  mytextures(){
+//Boden Texture
+const myBodenTextureLoader = new THREE.TextureLoader();
+const BodenBaseColor = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_basecolor.jpg"
+);
+BodenBaseColor.wrapS = THREE.RepeatWrapping;
+BodenBaseColor.wrapT = THREE.RepeatWrapping;
+BodenBaseColor.repeat.set(2, 25);
+
+const BodenNormalMap = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_normal.jpg"
+);
+BodenNormalMap.wrapS = THREE.RepeatWrapping;
+BodenNormalMap.wrapT = THREE.RepeatWrapping;
+BodenNormalMap.repeat.set(2, 25);
+
+const BodenHeightMap = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_height.png"
+);
+BodenHeightMap.wrapS = THREE.RepeatWrapping;
+BodenHeightMap.wrapT = THREE.RepeatWrapping;
+BodenHeightMap.repeat.set(2, 25);
+
+const BodenRoughnessMap = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_roughness.jpg"
+);
+BodenRoughnessMap.wrapS = THREE.RepeatWrapping;
+BodenRoughnessMap.wrapT = THREE.RepeatWrapping;
+BodenRoughnessMap.repeat.set(2, 25);
+
+const BodenAmbientOcclusionMap = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_ambientOcclusion.jpg"
+);
+BodenAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
+BodenAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
+BodenAmbientOcclusionMap.repeat.set(2, 25);
+
+const BodenMetalic = myBodenTextureLoader.load(
+  "textures/boden/Metal_ArtDeco_Tiles_001_metallic.jpg"
+);
+BodenMetalic.wrapS = THREE.RepeatWrapping;
+BodenMetalic.wrapT = THREE.RepeatWrapping;
+BodenMetalic.repeat.set(2, 25);
+
+//irgendwas mit metall
+const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
+  format: THREE.RGBAFormat,
+  generateMipmaps: true,
+  minFilter: THREE.LinearMipmapLinearFilter,
+  encoding: THREE.SRGBColorSpace,
+});
+
+const cubeRenderTarget2 = new THREE.WebGLCubeRenderTarget(128, {
+  format: THREE.RGBAFormat,
+  generateMipmaps: true,
+  minFilter: THREE.LinearMipmapLinearFilter,
+  encoding: THREE.SRGBColorSpace,
+});
+
+
+const cubeCamera = new THREE.CubeCamera(1, 10000, cubeRenderTarget);
+const cubeCamera2 = new THREE.CubeCamera(1,10000, cubeRenderTarget2);
+//CREATE PLANE
+
+//Der Boden ist keine Lava
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 100, 400, 400),
+  new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    map: BodenBaseColor,
+    normalMap: BodenNormalMap,
+    displacementMap: BodenHeightMap,
+    displacementScale: 0.7,
+    roughnessMap: BodenRoughnessMap,
+    roughness: 1,
+    aoMap: BodenAmbientOcclusionMap,
+    metalnessMap: BodenMetalic,
+    metalness: 1,
+    envMap: cubeRenderTarget.texture,
+  })
+);
+plane.position.x = 0;
+plane.position.y = -1;
+plane.position.z = -50;
+plane.rotation.set(Math.PI / 2, 0, 0);
+plane.receiveShadow = true;
+this.scene.add(plane);
+plane.add(cubeCamera);
+plane.add(cubeCamera2);
+
+
+
+
+//Wand Texture
+const myTextureLoader = new THREE.TextureLoader();
+const tilesBaseColor = myTextureLoader.load(
+  "textures/Stone_Floor_006_basecolor.jpg"
+);
+tilesBaseColor.wrapS = THREE.RepeatWrapping;
+tilesBaseColor.wrapT = THREE.RepeatWrapping;
+tilesBaseColor.repeat.set(25, 1);
+
+const tilesNormalMap = myTextureLoader.load(
+  "textures/Stone_Floor_006_normal.jpg"
+);
+tilesNormalMap.wrapS = THREE.RepeatWrapping;
+tilesNormalMap.wrapT = THREE.RepeatWrapping;
+tilesNormalMap.repeat.set(25, 1);
+
+const tilesHeightMap = myTextureLoader.load(
+  "textures/Stone_Floor_006_height.png"
+);
+tilesHeightMap.wrapS = THREE.RepeatWrapping;
+tilesHeightMap.wrapT = THREE.RepeatWrapping;
+tilesHeightMap.repeat.set(25, 1);
+
+const tilesRoughnessMap = myTextureLoader.load(
+  "textures/Stone_Floor_006_roughness.jpg"
+);
+tilesRoughnessMap.wrapS = THREE.RepeatWrapping;
+tilesRoughnessMap.wrapT = THREE.RepeatWrapping;
+tilesRoughnessMap.repeat.set(25, 1);
+
+const tilesAmbientOcclusionMap = myTextureLoader.load(
+  "textures/Stone_Floor_006_ambientOcclusion.jpg"
+);
+tilesAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
+tilesAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
+tilesAmbientOcclusionMap.repeat.set(25, 1);
+
+//Wand
+const wand2 = new THREE.Mesh(
+  new THREE.PlaneGeometry(100, 5, 400, 400),
+  new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    map: tilesBaseColor,
+    normalMap: tilesNormalMap,
+    displacementMap: tilesHeightMap,
+    displacementScale: 0.7,
+    roughnessMap: tilesRoughnessMap,
+    roughness: 1,
+    aoMap: tilesAmbientOcclusionMap,
+  })
+);
+wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
+wand2.position.x = 5.5;
+wand2.position.z = -50;
+wand2.position.y = 1;
+wand2.rotation.set(Math.PI / 1, 4.72, 0.005);
+this.scene.add(wand2);
+wand2.castShadow = true;
+wand2.receiveShadow = true;
+
+const wand3 = new THREE.Mesh(
+  new THREE.PlaneGeometry(100, 5, 400, 400),
+  new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    map: tilesBaseColor,
+    normalMap: tilesNormalMap,
+    displacementMap: tilesHeightMap,
+    displacementScale: 0.7,
+    roughnessMap: tilesRoughnessMap,
+    roughness: 1,
+    aoMap: tilesAmbientOcclusionMap,
+  })
+);
+wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
+wand3.position.x = -4.2;
+wand3.position.z = -50;
+wand3.position.y = 1;
+wand3.rotation.set(Math.PI / 1, 4.72, 0.005);
+this.scene.add(wand3);
+wand3.castShadow = true;
+wand3.receiveShadow = true;
+    
+  }
   
   
   createButtonStates(components){
@@ -494,7 +459,7 @@ this.cube3.position.set(1,1,1);
 
     
 
-      var myModels = ["wand-door.glb", "Fackel.glb","Fackel2.glb", "door.glb"];
+      var myModels = [ "Fackel.glb","Fackel2.glb","door.glb" ];
 
       let me = this;
       const myGLTFloader = new GLTFLoader();
@@ -522,15 +487,15 @@ this.cube3.position.set(1,1,1);
             console.log("SAY THE NAME")
             
            
-          var mydoor = mygltf.getObjectByName("door");
+          //this.mydoor = mygltf.getObjectByName("door");
            
            //me.mydoor.position.set(0,1,-8);
           // console.log(mydoor);
-          
-          gibName(mydoor);
+                    
+          gibName(saythename);
   
           },
-          function (xhr) {
+           function (xhr) {
             console.log(
               ((xhr.loaded / xhr.total) * 100).toFixed() +
                 "% loaded" 
@@ -538,7 +503,7 @@ this.cube3.position.set(1,1,1);
           },
           function (error) {
             console.log("An error happened");
-          }
+          },
                     
           
           
@@ -546,21 +511,21 @@ this.cube3.position.set(1,1,1);
         
         
       }
-
+      function gibName (mymodels) {
+        //me.mydoor.position.set(0,1,-8);
+        console.log("TESTDOOR")
+        console.log(mymodels);
+        console.log("TESTDOOR")
+        mymodels[3].name = "kerze";
+       // mymodels[1].position.set(0,0,0);
+        
       
-    function gibName (testdoor) {
-//me.mydoor.position.set(0,1,-8);
-console.log("TESTDOOR")
-console.log(testdoor);
-console.log("TESTDOOR")
 
-this.testdoor.position.set(0,0,0);
-    }
-    
-    
+        
+            }
   }
 
- 
+  
  
    
 
@@ -630,7 +595,7 @@ this.userData.selectPressed = false;
 
 
    if (controller.userData.selectPressed ){
-   
+   // VR-Buttons
             controller.children[0].scale.z = 10;
             this.scene.add(this.highlight);
           /* this.scene.add(this.highlight2); */
@@ -659,18 +624,90 @@ this.userData.selectPressed = false;
                 console.log('controller geht');
                // console.log(intersects[0]);
                 controller.children[0].scale.z = intersects[0].distance;
-               // intersects[0].object.position.set(0,0,0);                
+               //Buttons werden gedrückt      
 
                 if(this.highlight.visible == true && intersects[0].object.name =="cube1"){
-                  intersects[0].object.position.setY(-0.5);
+
+                const stats = Stats();
+                document.body.appendChild(stats.dom);
+
+                const downcube1 = () => {
+                  new TWEEN.Tween(intersects[0].object.position)
+                    .to(
+                      {
+                        y: -0.5,
+                      },
+                      500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                  new TWEEN.Tween(this.cube2.position)
+                    .to(
+                      {
+                        y: 0,
+                      },
+                      500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+                };
+
+                var animate = function () {
+                  requestAnimationFrame(animate);
+
+                  TWEEN.update();
+                  stats.update();
+                };
+
+                animate();
+                downcube1();
+
+                 // intersects[0].object.position.setY(-0.2);
                   console.log(this.room.children);
                   this.cube3.position.set(0,0,0);
-                  this.cube2.position.setY(0);
+                 // this.cube2.position.setY(0);
+                 
+                 
+                
                 }
                 if(this,this.highlight.visible == true && intersects[0].object.name == "cube2"){
-                  intersects[0].object.position.setY(-0.5);
+                  
+                  const stats = Stats();
+                  document.body.appendChild(stats.dom);
+                  
+                  
+                  const downcube2 = () => {
+                  new TWEEN.Tween(intersects[0].object.position)
+                  .to({
+                    y: -0.5
+                  },500)
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start()
+                  
+                  new TWEEN.Tween(this.cube.position)
+                  .to({
+                    y: 0
+                  },500)
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start()
+                  }
+                  
+                  
+                                  
+                  var animate = function () {
+                    requestAnimationFrame(animate);
+                    
+                    TWEEN.update();
+                    stats.update();
+                  };
+                  
+                  animate();
+                  downcube2();
+
+                  //intersects[0].object.position.setY(-0.2); 
                   this.cube3.position.set(-3,2,0);
-                  this.cube.position.setY(0);
+                 // this.cube.position.setY(0);
                 }
                 
                 
