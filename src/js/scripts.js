@@ -20,6 +20,8 @@ class App {
   renderer;
   container;
   cube;
+  cube2;
+  cube3;
   orbitControls;
   controllers;
   raycaster;
@@ -27,7 +29,8 @@ class App {
   workingVector;
   candle;
   object;
-
+door;
+mydoor;
   
 
   
@@ -158,6 +161,7 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 //CREATE CUBE TO INTERACT
     const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
     const boxgeometry2 = new THREE.BoxGeometry(1,1,1);
+    const boxgeometry3 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
 // CREATE CUBE TO INTERACT MATERIAL
     const cubematerial = new THREE.MeshPhongMaterial({
@@ -178,12 +182,10 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     opacity: 1
     });
 
-    
-<<<<<<< HEAD
+    const cubematerial3 = new THREE.MeshBasicMaterial(0xfff00);
+
 //Würfel erstellen und zum Raumm hinzufügen
-=======
 //COMBINE CUBE TO INTERACT WITH MATERIAL
->>>>>>> 862796aaaa3d75f1bd4c4b09f4c21a8b36d23fab
     this.cube = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube);
     this.cube.castShadow = true;
@@ -194,6 +196,10 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     this.cube2.castShadow = true;
     this.cube2.name ="cube2"
 
+    this.cube3 = new THREE.Mesh(boxgeometry3, cubematerial3);
+    this.room.add(this.cube3);
+    this.cube3.castShadow = true;
+
 
 
     //Highlight für Würfel
@@ -203,15 +209,11 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 
 
 
-<<<<<<< HEAD
-    const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
-=======
     this.highlight2 = new THREE.Mesh(boxgeometry2,
     new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide }));
     this.highlight2.scale.set(1.2, 1.2, 1.2);
 
    /* const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
->>>>>>> 862796aaaa3d75f1bd4c4b09f4c21a8b36d23fab
     const doormat = new THREE.MeshLambertMaterial({
       color: 0xff0000
     });
@@ -234,6 +236,7 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
 
 this.cube.position.set(-3,0,-4);
 this.cube2.position.set(3,0,-4);
+this.cube3.position.set(1,1,1);
     
 
      // Hier wird random gewürfelt
@@ -519,7 +522,7 @@ this.cube2.position.set(3,0,-4);
             console.log("SAY THE NAME")
             
            
-           var mydoor = mygltf.getObjectByName("door");
+          var mydoor = mygltf.getObjectByName("door");
            
            //me.mydoor.position.set(0,1,-8);
           // console.log(mydoor);
@@ -550,15 +553,14 @@ this.cube2.position.set(3,0,-4);
 console.log("TESTDOOR")
 console.log(testdoor);
 console.log("TESTDOOR")
+
+this.testdoor.position.set(0,0,0);
     }
     
     
   }
-<<<<<<< HEAD
 
-=======
  
->>>>>>> 862796aaaa3d75f1bd4c4b09f4c21a8b36d23fab
  
    
 
@@ -641,8 +643,8 @@ this.userData.selectPressed = false;
             const intersects = this.raycaster.intersectObjects( this.room.children); //cube2
 
 
-            console.log(this.room.children[0]);
-            console.log(intersects);
+           // console.log(this.room.children[0]);
+            // console.log(intersects);
       
            
 
@@ -655,19 +657,33 @@ this.userData.selectPressed = false;
                 intersects[0].object.add(this.highlight);
                 this.highlight.visible = true;
                 console.log('controller geht');
-                console.log(intersects[0]);
+               // console.log(intersects[0]);
                 controller.children[0].scale.z = intersects[0].distance;
-                intersects[0].object.position.set(0,0,0);                
+               // intersects[0].object.position.set(0,0,0);                
 
-                if(this.highlight.visible == false){
-                  intersects[0].object.position.set(1,1,1); 
-                  console.log("ZURÜCKGESETZT");
+                if(this.highlight.visible == true && intersects[0].object.name =="cube1"){
+                  intersects[0].object.position.setY(-0.5);
+                  console.log(this.room.children);
+                  this.cube3.position.set(0,0,0);
+                  this.cube2.position.setY(0);
                 }
+                if(this,this.highlight.visible == true && intersects[0].object.name == "cube2"){
+                  intersects[0].object.position.setY(-0.5);
+                  this.cube3.position.set(-3,2,0);
+                  this.cube.position.setY(0);
+                }
+                
+                
 
             } 
             else{
                 this.highlight.visible = false;
-                console.log('controller geht nicht')
+                /*if(this.highlight.visible == false && intersects[0].object.name =="cube1"){
+                 this.cube.position.setY(0);
+                // this.cube2.position.setY(0);
+                 this.cube3.position.set(1,1,1);
+                }*/
+                //console.log('controller geht nicht')
 
              /*   this.highlight2.visible = false;
                 console.log('highlight 2 geht nicht')*/
