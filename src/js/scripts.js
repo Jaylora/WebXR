@@ -169,14 +169,17 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
    
 
     
-
+//Würfel erstellen und zum Raumm hinzufügen
     this.cube = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube);
     this.cube.castShadow = true;
 
+    //Highlight für Würfel
     this.highlight = new THREE.Mesh(boxgeometry,
     new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide }));
     this.highlight.scale.set(1.2, 1.2, 1.2);
+
+
 
     const doorgeo = new THREE.BoxGeometry(1.7,3.5,0.3);
     const doormat = new THREE.MeshLambertMaterial({
@@ -438,72 +441,73 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
    */
   }
   loadMyFiles() {
-    var myModels = ["wand-door.glb", "Fackel.glb","Fackel2.glb", "door.glb"];
 
-    let me = this;
-    const myGLTFloader = new GLTFLoader();
-   
-    const meinpfad = "./textures/";
     
-    for (let i = 0; i <= myModels.length - 1; i++) {
-      var dateipfad = meinpfad + myModels[i];
 
-      myGLTFloader.load(
-        dateipfad,
+      var myModels = ["wand-door.glb", "Fackel.glb","Fackel2.glb", "door.glb"];
 
-        function (gltf) {
-          
-          me.scene.add(gltf.scene);
-           var mygltf = gltf.scene;
-
-          gltf.scene; // THREE.Group
-          gltf.cameras; // Array<THREE.Camera>
-          gltf.asset; // Object
-         
-          var saythename = mygltf.getObjectsByProperty(myModels[i]);
-          console.log(saythename);
-
-          
-         
-         const mydoor = mygltf.getObjectByName("door");
-         
-         //mydoor.position.set(0,1,-8);
-         console.log(mydoor);
-        
-
-        },
-        function (xhr) {
-          console.log(
-            ((xhr.loaded / xhr.total) * 100).toFixed() +
-              "% loaded" 
-          );
-        },
-        function (error) {
-          console.log("An error happened");
-        },
-        function test(){
-
-          
-    
-    
-        }
-        
-        
-        
-      );   
+      let me = this;
+      const myGLTFloader = new GLTFLoader();
+     
+      const meinpfad = "./textures/";
       
+      for (let i = 0; i <= myModels.length - 1; i++) {
+        var dateipfad = meinpfad + myModels[i];
+  
+        myGLTFloader.load(
+          dateipfad,
+  
+          function (gltf) {
+            
+            me.scene.add(gltf.scene);
+             var mygltf = gltf.scene;
+  
+            gltf.scene; // THREE.Group
+            gltf.cameras; // Array<THREE.Camera>
+            gltf.asset; // Object
+           
+            var saythename = mygltf.getObjectsByProperty(myModels[i]);
+            console.log("SAY THE NAME")
+            console.log(saythename);
+            console.log("SAY THE NAME")
+            
+           
+           var mydoor = mygltf.getObjectByName("door");
+           
+           //me.mydoor.position.set(0,1,-8);
+          // console.log(mydoor);
+          
+          gibName(mydoor);
+  
+          },
+          function (xhr) {
+            console.log(
+              ((xhr.loaded / xhr.total) * 100).toFixed() +
+                "% loaded" 
+            );
+          },
+          function (error) {
+            console.log("An error happened");
+          }
+                    
+          
+          
+        );   
+        
+        
+      }
+
       
+    function gibName (testdoor) {
+//me.mydoor.position.set(0,1,-8);
+console.log("TESTDOOR")
+console.log(testdoor);
+console.log("TESTDOOR")
     }
+    
     
   }
 
-  newShit(){
-    function myNewFunction(givethenames) {
-      console.log("NEW");
-      console.log(givethenames);
-    }
-  }
- 
  
    
 
