@@ -48,35 +48,44 @@ class App {
 
     //CREATE SCENE
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x444444);
+    this.scene.background = new THREE.Color(0x888888);
 
     // CREATE LIGHT
     //const myLight1 = new THREE.AmbientLight(0x404040, 3);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    const hemilight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 1);
    
 
-    const candle = new THREE.PointLight( 0xff2000, 7, 8, 7 )
-    const candlebig = new THREE.PointLight( 0xffff00, 2, 8, 7 )
-    const candle2 = new THREE.PointLight( 0xff2000, 7, 8, 7 )
-    const candle2big = new THREE.PointLight( 0xffff00, 2, 8, 7 )
+    const lamp = new THREE.PointLight( 0xffff, 5, 8, 7 )
+    const lampbig = new THREE.PointLight( 0xffffff, 1, 8, 7 )
+    const lamp2 = new THREE.PointLight( 0xffff, 5, 8, 7 )
+    const lampbig2 = new THREE.PointLight( 0xffffff, 1, 8, 7 )
+    const lamp3 = new THREE.PointLight(0xffff, 5, 8, 7 )
+    const lampbig3 = new THREE.PointLight(0xffffff, 1, 8, 7 )
 
 
-   
-candle2.position.set( 4.5, 2.2, -1.8 );
-candle.position.set( 4.5, 2.2, -4.1 );
-candlebig.position.set( 4.5, 2.2, -4.1 );
-candle2big.position.set( 4.5, 2.2, -1.8 );
+
+    lamp.position.set(4.5, 1, -3.5);
+    lampbig.position.set(4.5, 1, -3.5);
+    lamp2.position.set(4.5, 1, 0);
+    lampbig2.position.set(4.5, 1, 0);
+
+    lamp3.position.set(4.5, 1, 3.5);
+    lampbig3.position.set(4.5, 1, 3.5);
+
   
     
     const sphereSize1 = 0.4;
     const sphereSize2 = 1;
-    const candleHelper = new THREE.PointLightHelper(candle, sphereSize1)
-    const candleHelper2 = new THREE.PointLightHelper(candle2, sphereSize1)
-    const candlebigHelper = new THREE.PointLightHelper(candlebig, sphereSize2)
-    const candlebig2Helper = new THREE.PointLightHelper(candle2big, sphereSize2)
-    this.scene.add(candleHelper, candleHelper2, candlebigHelper, candlebig2Helper);
-    this.scene.add( candle, candle2, candlebig, candle2big );
+    const lampHelper = new THREE.PointLightHelper(lamp, sphereSize1)
+    const lamp2Helper = new THREE.PointLightHelper(lamp2, sphereSize1)
+    const lamp3helper = new THREE.PointLightHelper(lamp3,sphereSize1)
+    const lampbigHelper = new THREE.PointLightHelper(lampbig, sphereSize2)
+    const lampbig2Helper = new THREE.PointLightHelper(lampbig2, sphereSize2)
+    const lampbig3Helper = new THREE.PointLightHelper(lampbig3, sphereSize2)
+    
+    this.scene.add(lampHelper, lamp2Helper, lampbigHelper, lampbig2Helper, lamp3helper, lampbig3Helper);
+    this.scene.add( lamp, lamp2, lamp3, lampbig, lampbig2, lampbig3);
 
 
     this.scene.add(hemilight, directionalLight );
@@ -92,12 +101,34 @@ candle2big.position.set( 4.5, 2.2, -1.8 );
     directionalLight.shadow.camera.near = 0.5; // default
     directionalLight.shadow.camera.far = 500; // default
 
+
+    const uplight = new THREE.SpotLight( 0xffffff );
+    uplight.position.set( 2, 0, 0 );
+   
+    
+    uplight.castShadow = true;
+    
+    uplight.shadow.mapSize.width = 1024;
+    uplight.shadow.mapSize.height = 1024;
+    
+    uplight.shadow.camera.near = 500;
+    uplight.shadow.camera.far = 4000;
+    uplight.shadow.camera.fov = 30;
+    
+    this.scene.add( uplight );
+
+
+
     //HILFE
     const dirLightHelper = new THREE.DirectionalLightHelper(
       directionalLight,
       5
     );
     this.scene.add(dirLightHelper);
+
+
+const spotLightHelper = new THREE.SpotLightHelper( uplight );
+this.scene.add( spotLightHelper );
 
     //Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -224,49 +255,47 @@ this.cube3.position.set(1,1,1);
   }
 
   mytextures(){
-//Boden Texture
-const myBodenTextureLoader = new THREE.TextureLoader();
-const BodenBaseColor = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_basecolor.jpg"
-);
-BodenBaseColor.wrapS = THREE.RepeatWrapping;
-BodenBaseColor.wrapT = THREE.RepeatWrapping;
-BodenBaseColor.repeat.set(2, 25);
+//Lampenschirm
 
-const BodenNormalMap = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_normal.jpg"
-);
-BodenNormalMap.wrapS = THREE.RepeatWrapping;
-BodenNormalMap.wrapT = THREE.RepeatWrapping;
-BodenNormalMap.repeat.set(2, 25);
 
-const BodenHeightMap = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_height.png"
-);
-BodenHeightMap.wrapS = THREE.RepeatWrapping;
-BodenHeightMap.wrapT = THREE.RepeatWrapping;
-BodenHeightMap.repeat.set(2, 25);
 
-const BodenRoughnessMap = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_roughness.jpg"
-);
-BodenRoughnessMap.wrapS = THREE.RepeatWrapping;
-BodenRoughnessMap.wrapT = THREE.RepeatWrapping;
-BodenRoughnessMap.repeat.set(2, 25);
 
-const BodenAmbientOcclusionMap = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_ambientOcclusion.jpg"
-);
-BodenAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
-BodenAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
-BodenAmbientOcclusionMap.repeat.set(2, 25);
+const schirmTextureLoader = new THREE.TextureLoader();
 
-const BodenMetalic = myBodenTextureLoader.load(
-  "textures/boden/Metal_ArtDeco_Tiles_001_metallic.jpg"
+const SchirmBaseColor = schirmTextureLoader.load(
+  "textures/metal/Metal032_2K-JPG_Color.jpg"
 );
-BodenMetalic.wrapS = THREE.RepeatWrapping;
-BodenMetalic.wrapT = THREE.RepeatWrapping;
-BodenMetalic.repeat.set(2, 25);
+SchirmBaseColor.wrapS = THREE.RepeatWrapping;
+SchirmBaseColor.wrapT = THREE.RepeatWrapping;
+SchirmBaseColor.repeat.set(1,1);
+
+const SchirmNormalMap = schirmTextureLoader.load(
+  "textures/metal/Metal032_2K-JPG_NormalGL.jpg"
+);
+SchirmNormalMap.wrapS = THREE.RepeatWrapping;
+SchirmNormalMap.wrapT = THREE.RepeatWrapping;
+SchirmNormalMap.repeat.set(1,1);
+
+const SchirmHeightMap = schirmTextureLoader.load(
+  "textures/metal/Metal032_2K-JPG_Displacement.jpg"
+);
+SchirmHeightMap.wrapS = THREE.RepeatWrapping;
+SchirmHeightMap.wrapT = THREE.RepeatWrapping;
+SchirmHeightMap.repeat.set(1,1);
+
+const SchirmRoughnessMap = schirmTextureLoader.load(
+  "textures/metal/Metal032_2K-JPG_Roughness.jpg"
+);
+SchirmRoughnessMap.wrapS = THREE.RepeatWrapping;
+SchirmRoughnessMap.wrapT = THREE.RepeatWrapping;
+SchirmRoughnessMap.repeat.set(1,1);
+
+const SchirmMetalic = schirmTextureLoader.load(
+  "textures/metal/Metal032_2K-JPG_Metalness.jpg"
+);
+SchirmRoughnessMap.wrapS = THREE.RepeatWrapping;
+SchirmRoughnessMap.wrapT = THREE.RepeatWrapping;
+SchirmRoughnessMap.repeat.set(1, 1);
 
 //irgendwas mit metall
 const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
@@ -276,43 +305,85 @@ const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
   encoding: THREE.SRGBColorSpace,
 });
 
-const cubeRenderTarget2 = new THREE.WebGLCubeRenderTarget(128, {
-  format: THREE.RGBAFormat,
-  generateMipmaps: true,
-  minFilter: THREE.LinearMipmapLinearFilter,
-  encoding: THREE.SRGBColorSpace,
-});
-
-
 const cubeCamera = new THREE.CubeCamera(1, 10000, cubeRenderTarget);
-const cubeCamera2 = new THREE.CubeCamera(1,10000, cubeRenderTarget2);
+
+const lampenschirm = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.6 , 0.3 , 0.7 , 5 ,1 ,true, 9, 4),
+  new THREE.MeshStandardMaterial( {
+    color: 0xffffff,
+    side: THREE.DoubleSide,
+    map: SchirmBaseColor,
+    normalMap: SchirmNormalMap,
+    displacementMap: SchirmHeightMap,
+    displacementScale: 0.1,
+    roughnessMap: SchirmRoughnessMap,
+    roughness: 1,
+    metalnessMap: SchirmMetalic,
+    metalness: 1,
+    envMap: cubeRenderTarget.texture,})
+);
+
+lampenschirm.position.set(4.8,1,0);
+lampenschirm.rotation.set(0,0,0.2);
+this.scene.add(lampenschirm);
+lampenschirm.add(cubeCamera);
+
+
+//Boden Texture
+const myBodenTextureLoader = new THREE.TextureLoader();
+const BodenBaseColor = myBodenTextureLoader.load(
+  "textures/betonboden/Concrete034_4K-JPG_Color.jpg"
+);
+BodenBaseColor.wrapS = THREE.RepeatWrapping;
+BodenBaseColor.wrapT = THREE.RepeatWrapping;
+BodenBaseColor.repeat.set(1,1);
+
+const BodenNormalMap = myBodenTextureLoader.load(
+  "textures/betonboden/Concrete034_4K-JPG_NormalGL.jpg"
+);
+BodenNormalMap.wrapS = THREE.RepeatWrapping;
+BodenNormalMap.wrapT = THREE.RepeatWrapping;
+BodenNormalMap.repeat.set(1,1);
+
+const BodenHeightMap = myBodenTextureLoader.load(
+  "textures/betonboden/Concrete034_4K-JPG_Displacement.jpg"
+);
+BodenHeightMap.wrapS = THREE.RepeatWrapping;
+BodenHeightMap.wrapT = THREE.RepeatWrapping;
+BodenHeightMap.repeat.set(1,1);
+
+const BodenRoughnessMap = myBodenTextureLoader.load(
+  "textures/betonboden/Concrete034_4K-JPG_Roughness.jpg"
+);
+BodenRoughnessMap.wrapS = THREE.RepeatWrapping;
+BodenRoughnessMap.wrapT = THREE.RepeatWrapping;
+BodenRoughnessMap.repeat.set(1,1);
+//...
+
 //CREATE PLANE
 
 //Der Boden ist keine Lava
 const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(10, 100, 400, 400),
+  new THREE.PlaneGeometry(11, 10, 10, 10),
   new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     map: BodenBaseColor,
     normalMap: BodenNormalMap,
     displacementMap: BodenHeightMap,
-    displacementScale: 0.7,
+    displacementScale: 0.1,
     roughnessMap: BodenRoughnessMap,
     roughness: 1,
-    aoMap: BodenAmbientOcclusionMap,
-    metalnessMap: BodenMetalic,
-    metalness: 1,
-    envMap: cubeRenderTarget.texture,
+    //envMap: cubeRenderTarget.texture,
   })
 );
 plane.position.x = 0;
-plane.position.y = -1;
-plane.position.z = -50;
-plane.rotation.set(Math.PI / 2, 0, 0);
+plane.position.y = 0;
+plane.position.z = 0;
+plane.rotation.set(1.56, 0, 0);
 plane.receiveShadow = true;
 this.scene.add(plane);
-plane.add(cubeCamera);
-plane.add(cubeCamera2);
+//plane.add(cubeCamera);
+//plane.add(cubeCamera2);
 
 
 
@@ -320,80 +391,80 @@ plane.add(cubeCamera2);
 //Wand Texture
 const myTextureLoader = new THREE.TextureLoader();
 const tilesBaseColor = myTextureLoader.load(
-  "textures/Stone_Floor_006_basecolor.jpg"
+  "textures/wand/Wallpaper001A_4K-JPG_Color.jpg"
 );
 tilesBaseColor.wrapS = THREE.RepeatWrapping;
 tilesBaseColor.wrapT = THREE.RepeatWrapping;
-tilesBaseColor.repeat.set(25, 1);
+tilesBaseColor.repeat.set(5,1);
 
 const tilesNormalMap = myTextureLoader.load(
-  "textures/Stone_Floor_006_normal.jpg"
+  "textures/wand/Wallpaper001A_4K-JPG_NormalGL.jpg"
 );
 tilesNormalMap.wrapS = THREE.RepeatWrapping;
 tilesNormalMap.wrapT = THREE.RepeatWrapping;
-tilesNormalMap.repeat.set(25, 1);
+tilesNormalMap.repeat.set(5,1);
 
 const tilesHeightMap = myTextureLoader.load(
-  "textures/Stone_Floor_006_height.png"
+  "textures/wand/Wallpaper001A_4K-JPG_Displacement.jpg"
 );
 tilesHeightMap.wrapS = THREE.RepeatWrapping;
 tilesHeightMap.wrapT = THREE.RepeatWrapping;
-tilesHeightMap.repeat.set(25, 1);
+tilesHeightMap.repeat.set(5,1);
 
 const tilesRoughnessMap = myTextureLoader.load(
-  "textures/Stone_Floor_006_roughness.jpg"
+  "textures/wand/Wallpaper001A_4K-JPG_Roughness.jpg"
 );
 tilesRoughnessMap.wrapS = THREE.RepeatWrapping;
 tilesRoughnessMap.wrapT = THREE.RepeatWrapping;
-tilesRoughnessMap.repeat.set(25, 1);
+tilesRoughnessMap.repeat.set(5, 1);
 
-const tilesAmbientOcclusionMap = myTextureLoader.load(
+/*const tilesAmbientOcclusionMap = myTextureLoader.load(
   "textures/Stone_Floor_006_ambientOcclusion.jpg"
 );
 tilesAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
 tilesAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
 tilesAmbientOcclusionMap.repeat.set(25, 1);
-
+*/
 //Wand
 const wand2 = new THREE.Mesh(
-  new THREE.PlaneGeometry(100, 5, 400, 400),
+  new THREE.PlaneGeometry(10, 3, 400, 400),
   new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     map: tilesBaseColor,
     normalMap: tilesNormalMap,
     displacementMap: tilesHeightMap,
-    displacementScale: 0.7,
+    displacementScale: 0.05,
     roughnessMap: tilesRoughnessMap,
     roughness: 1,
-    aoMap: tilesAmbientOcclusionMap,
+    //aoMap: tilesAmbientOcclusionMap,
   })
 );
 wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
-wand2.position.x = 5.5;
-wand2.position.z = -50;
-wand2.position.y = 1;
+wand2.position.x = 5;
+wand2.position.z = 0;
+wand2.position.y = 1.4;
 wand2.rotation.set(Math.PI / 1, 4.72, 0.005);
 this.scene.add(wand2);
 wand2.castShadow = true;
 wand2.receiveShadow = true;
 
 const wand3 = new THREE.Mesh(
-  new THREE.PlaneGeometry(100, 5, 400, 400),
+  new THREE.PlaneGeometry(10, 3, 400, 400),
   new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     map: tilesBaseColor,
     normalMap: tilesNormalMap,
     displacementMap: tilesHeightMap,
-    displacementScale: 0.7,
+    displacementScale: 0.05,
     roughnessMap: tilesRoughnessMap,
     roughness: 1,
-    aoMap: tilesAmbientOcclusionMap,
+   // aoMap: tilesAmbientOcclusionMap,
   })
 );
 wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
-wand3.position.x = -4.2;
-wand3.position.z = -50;
-wand3.position.y = 1;
+wand3.position.x = -5;
+wand3.position.z = 0;
+wand3.position.y = 1.4;
 wand3.rotation.set(Math.PI / 1, 4.72, 0.005);
 this.scene.add(wand3);
 wand3.castShadow = true;
