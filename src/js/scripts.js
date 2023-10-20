@@ -52,26 +52,39 @@ class App {
 
     // CREATE LIGHT
     //const myLight1 = new THREE.AmbientLight(0x404040, 3);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
+    directionalLight.target.position.set(0,0,0);
+    directionalLight.target.updateMatrixWorld();
+
+    directionalLight.castShadow = true;
+    directionalLight.position.set(0, 10, 0);
+
+    directionalLight.shadow.mapSize.width = 512; // default
+    directionalLight.shadow.mapSize.height = 512; // default
+    directionalLight.shadow.camera.near = 0.5; // default
+    directionalLight.shadow.camera.far = 500; // default
+
     const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 1);
    
 
-    const lamp = new THREE.PointLight( 0xffff, 5, 8, 7 )
-    const lampbig = new THREE.PointLight( 0xffffff, 1, 8, 7 )
-    const lamp2 = new THREE.PointLight( 0xffff, 5, 8, 7 )
-    const lampbig2 = new THREE.PointLight( 0xffffff, 1, 8, 7 )
-    const lamp3 = new THREE.PointLight(0xffff, 5, 8, 7 )
-    const lampbig3 = new THREE.PointLight(0xffffff, 1, 8, 7 )
+
+
+    const lamp = new THREE.PointLight( 0xffff, 2, 8, 3 )
+    const lampbig = new THREE.PointLight( 0xffffff, 0.5, 8, 7 )
+    const lamp2 = new THREE.PointLight( 0xffff, 2, 8, 3 )
+    const lampbig2 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 )
+    const lamp3 = new THREE.PointLight(0xffff, 2, 8, 3 )
+    const lampbig3 = new THREE.PointLight(0xffffff, 0.5, 8, 7 )
 
 
 
-    lamp.position.set(4.5, 1, -3.5);
-    lampbig.position.set(4.5, 1, -3.5);
-    lamp2.position.set(4.5, 1, 0);
-    lampbig2.position.set(4.5, 1, 0);
+    lamp.position.set(4.8, 1, -3.5);
+    lampbig.position.set(4.8, 1, -3.5);
+    lamp2.position.set(4.8, 1, 0);
+    lampbig2.position.set(4.8, 1, 0);
 
-    lamp3.position.set(4.5, 1, 3.5);
-    lampbig3.position.set(4.5, 1, 3.5);
+    lamp3.position.set(4.8, 1, 3.5);
+    lampbig3.position.set(4.8, 1, 3.5);
 
   
     
@@ -88,34 +101,31 @@ class App {
     this.scene.add( lamp, lamp2, lamp3, lampbig, lampbig2, lampbig3);
 
 
-    this.scene.add(hemilight, directionalLight );
+    this.scene.add(hemilight, directionalLight);
 
     
 
-    directionalLight.castShadow = true;
-    directionalLight.position.set(5, 10, 0);
-    directionalLight.target.position.set(4, 3, -7.5);
-
-    directionalLight.shadow.mapSize.width = 512; // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5; // default
-    directionalLight.shadow.camera.far = 500; // default
-
-
-    const uplight = new THREE.SpotLight( 0xffffff );
-    uplight.position.set( 2, 0, 0 );
-   
     
+
+
+    const uplight = new THREE.SpotLight( 0xffffff, 15, 2, 0.8,0.5,2);
     uplight.castShadow = true;
+    uplight.target.position.set(4.5,1,0);
+    uplight.target.updateMatrixWorld();
+    uplight.position.set(3, 0.2, 0 );
+  
     
-    uplight.shadow.mapSize.width = 1024;
-    uplight.shadow.mapSize.height = 1024;
+    /*
+    uplight.shadow.mapSize.width = 5;
+    uplight.shadow.mapSize.height = 5;
     
     uplight.shadow.camera.near = 500;
     uplight.shadow.camera.far = 4000;
     uplight.shadow.camera.fov = 30;
-    
+    */
+    this.scene.add(uplight.target);
     this.scene.add( uplight );
+    
 
 
 
@@ -126,6 +136,7 @@ class App {
     );
     this.scene.add(dirLightHelper);
 
+   
 
 const spotLightHelper = new THREE.SpotLightHelper( uplight );
 this.scene.add( spotLightHelper );
@@ -259,7 +270,7 @@ this.cube3.position.set(1,1,1);
 
 
 
-
+/*
 const schirmTextureLoader = new THREE.TextureLoader();
 
 const SchirmBaseColor = schirmTextureLoader.load(
@@ -328,7 +339,7 @@ lampenschirm.rotation.set(0,0,0.2);
 this.scene.add(lampenschirm);
 lampenschirm.add(cubeCamera);
 
-
+*/
 //Boden Texture
 const myBodenTextureLoader = new THREE.TextureLoader();
 const BodenBaseColor = myBodenTextureLoader.load(
@@ -443,7 +454,7 @@ wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
 wand2.position.x = 5;
 wand2.position.z = 0;
 wand2.position.y = 1.4;
-wand2.rotation.set(Math.PI / 1, 4.72, 0.005);
+wand2.rotation.set(0,Math.PI / 2,0);
 this.scene.add(wand2);
 wand2.castShadow = true;
 wand2.receiveShadow = true;
@@ -465,7 +476,7 @@ wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
 wand3.position.x = -5;
 wand3.position.z = 0;
 wand3.position.y = 1.4;
-wand3.rotation.set(Math.PI / 1, 4.72, 0.005);
+wand3.rotation.set(0,Math.PI / 2,0);
 this.scene.add(wand3);
 wand3.castShadow = true;
 wand3.receiveShadow = true;
@@ -530,7 +541,7 @@ wand3.receiveShadow = true;
 
     
 
-      var myModels = [ "Fackel.glb","Fackel2.glb","door.glb" ];
+      var myModels = [ /*"Fackel.glb","Fackel2.glb","door.glb" */ "lampe.glb"];
 
       let me = this;
       const myGLTFloader = new GLTFLoader();
