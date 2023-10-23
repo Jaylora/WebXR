@@ -632,7 +632,7 @@ wand5.receiveShadow = true;
 
     
 
-      var myModels = [ /*"Fackel.glb","Fackel2.glb","door.glb" */ "lampe.glb"];
+      var myModels = [ /*"Fackel.glb","Fackel2.glb","door.glb" */ "lampe.glb", "kabel-sonde.glb"];
 
       let me = this;
       const myGLTFloader = new GLTFLoader();
@@ -689,6 +689,9 @@ wand5.receiveShadow = true;
         console.log("TESTDOOR")
         console.log(mymodels);
         console.log("TESTDOOR")
+
+       
+        
         //mymodels[3].name = "kerze";
        // mymodels[1].position.set(0,0,0);
         
@@ -699,7 +702,6 @@ wand5.receiveShadow = true;
   }
 
   
- 
    
 
   setupXR() {
@@ -764,7 +766,7 @@ this.userData.selectPressed = false;
 
  
 
-  handleController(controller) {
+  handleController(controller, myscene) {
 
 
    if (controller.userData.selectPressed ){
@@ -790,8 +792,19 @@ this.userData.selectPressed = false;
 
 
             if ( intersects.length>0 ){
+              console.log("DIE SZENE");
+              console.log(myscene);
+              console.log(myscene.children[47]);            
+              console.log("DIE SZENE");
+              console.log(this.room.children);
+              this.cube3.position.set(0,0,0);
+              const kabel = myscene.children[47].children[0];
+              const kopf = myscene.children[47].children[1];
+              const extention = myscene.children[47].children[2];
+              const sonde = myscene.children[47].children[3];
 
-              
+
+
                 intersects[0].object.add(this.highlight);
                 this.highlight.visible = true;
                 console.log('controller geht');
@@ -826,6 +839,29 @@ this.userData.selectPressed = false;
                     .start();
                 };
 
+                
+               
+               
+                const explosive = () => {
+                  new TWEEN.Tween(kopf.position)
+                  .to(
+                    {
+                      y: 0.5,
+                    }, 500
+                  )
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start();
+
+                  new TWEEN.Tween(sonde.position)
+                  .to(
+                    {
+                      y: -0.5,
+                    }, 500
+                  )
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start();
+                };
+
                 var animate = function () {
                   requestAnimationFrame(animate);
 
@@ -835,15 +871,17 @@ this.userData.selectPressed = false;
 
                 animate();
                 downcube1();
+                explosive();
 
                  // intersects[0].object.position.setY(-0.2);
-                  console.log(this.room.children);
-                  this.cube3.position.set(0,0,0);
-                 // this.cube2.position.setY(0);
+                 
                  
                  
                 
                 }
+
+
+
                 if(this,this.highlight.visible == true && intersects[0].object.name == "cube2"){
                   
                   const stats = Stats();
@@ -865,7 +903,25 @@ this.userData.selectPressed = false;
                   .easing(TWEEN.Easing.Cubic.Out)
                   .start()
                   }
-                  
+                  const shrink = () => {
+                    new TWEEN.Tween(kopf.position)
+                    .to(
+                      {
+                        y: 0,
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+  
+                    new TWEEN.Tween(sonde.position)
+                    .to(
+                      {
+                        y: 0,
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+                  };
                   
                                   
                   var animate = function () {
@@ -877,6 +933,7 @@ this.userData.selectPressed = false;
                   
                   animate();
                   downcube2();
+                  shrink();
 
                   //intersects[0].object.position.setY(-0.2); 
                   this.cube3.position.set(-3,2,0);
@@ -919,7 +976,7 @@ this.userData.selectPressed = false;
     if (this.controllers ){
       const self = this;
       this.controllers.forEach( ( controller) => { 
-          self.handleController( controller ) 
+          self.handleController( controller, this.scene ) 
       });
   }
 
