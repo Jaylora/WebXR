@@ -22,6 +22,7 @@ class App {
   cube;
   cube2;
   cube3;
+  cube4;
   orbitControls;
   controllers;
   raycaster;
@@ -239,9 +240,11 @@ this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
     this.scene.add( this.room );
 
 //CREATE CUBE TO INTERACT
-    const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
-    const boxgeometry2 = new THREE.BoxGeometry(1,1,1);
-    const boxgeometry3 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const boxgeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const boxgeometry2 = new THREE.BoxGeometry(0.5,0.5,0.5);
+    const boxgeometry3 = new  THREE.BoxGeometry(0.5,0.5,0.5);
+    const boxgeometry4 = new THREE.BoxGeometry(0.5,0.5,0.5);
+    
 
 // CREATE CUBE TO INTERACT MATERIAL
     const cubematerial = new THREE.MeshPhongMaterial({
@@ -262,7 +265,23 @@ this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
     opacity: 1
     });
 
-    const cubematerial3 = new THREE.MeshBasicMaterial(0xfff00);
+    const cubematerial3 = new THREE.MeshPhongMaterial({
+      color: new THREE.Color("rgb(3, 90, 252)"),
+    specular: new THREE.Color("rgb(186, 13, 13)"),
+    shininess: 10,
+    shading: THREE.FlatShading,
+    transparent: 1,
+    opacity: 1
+    });
+    
+    const cubematerial4 = new THREE.MeshPhongMaterial({
+      color: new THREE.Color("rgb(169, 3, 252)"),
+    specular: new THREE.Color("rgb(186, 13, 13)"),
+    shininess: 10,
+    shading: THREE.FlatShading,
+    transparent: 1,
+    opacity: 1
+    });
 
 //Würfel erstellen und zum Raumm hinzufügen
 //COMBINE CUBE TO INTERACT WITH MATERIAL
@@ -279,7 +298,12 @@ this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
     this.cube3 = new THREE.Mesh(boxgeometry3, cubematerial3);
     this.room.add(this.cube3);
     this.cube3.castShadow = true;
+    this.cube3.name ="cube3"
 
+    this.cube4 = new THREE.Mesh(boxgeometry4, cubematerial4);
+    this.room.add(this.cube4);
+    this.cube4.castShadow = true;
+    this.cube4.name ="cube4"
 
 
     //Highlight für Würfel
@@ -295,9 +319,11 @@ this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
 
    
 
-this.cube.position.set(-3,1,-4);
-this.cube2.position.set(3,1,-4);
-this.cube3.position.set(1,1,1);
+this.cube.position.set(1.75,0.2,-2);
+this.cube2.position.set(1.75,0.2,-1.5);
+this.cube3.position.set(-1.75,0.2,0.5);
+this.cube4.position.set(-1.75,0.2,1);
+
     
 
          //HILFE 
@@ -632,7 +658,7 @@ wand5.receiveShadow = true;
 
     
 
-      var myModels = [ /*"Fackel.glb","Fackel2.glb","door.glb" */ "lampe.glb", "kabel-sonde.glb"];
+      var myModels = [ "lampe.glb", "kabel-sonde.glb", "viscosity.glb"];
 
       let me = this;
       const myGLTFloader = new GLTFLoader();
@@ -792,36 +818,51 @@ this.userData.selectPressed = false;
 
 
             if ( intersects.length>0 ){
-              console.log("DIE SZENE");
-              console.log(myscene);
+            /*  console.log("DIE SZENE");
+              
               console.log(myscene.children[47]);            
               console.log("DIE SZENE");
               console.log(this.room.children);
-              this.cube3.position.set(0,0,0);
+            */
+              console.log(myscene);
               const kabel = myscene.children[47].children[0];
               const kopf = myscene.children[47].children[1];
               const extention = myscene.children[47].children[2];
               const sonde = myscene.children[47].children[3];
 
-
+              const flanschzylinder = myscene.children[48].children[1];
+              const flanschanschluss = myscene.children[48].children[2];
+              const flansch = myscene.children[48].children[3];
+              const flanschbody = myscene.children[48].children[4];
+              
+              const flanschkugel = myscene.children[48].children[7];
+              const standard = myscene.children[48].children[5];
+              const standardanschluss = myscene.children[48].children[6];
+              const standardbody = myscene.children[48].children[8];
+              
+              const nptanschluss = myscene.children[48].children[9];
+              const nptzylinder = myscene.children[48].children[10];
+              const nptbody = myscene.children[48].children[11];
+              const npt = myscene.children[48].children[12]; 
+              
 
                 intersects[0].object.add(this.highlight);
                 this.highlight.visible = true;
-                console.log('controller geht');
+                
                // console.log(intersects[0]);
                 controller.children[0].scale.z = intersects[0].distance;
                //Buttons werden gedrückt      
-
+              // Button für Füllstand
                 if(this.highlight.visible == true && intersects[0].object.name =="cube1"){
 
                 const stats = Stats();
                 document.body.appendChild(stats.dom);
 
-                const downcube1 = () => {
+                const downcubeleft = () => {
                   new TWEEN.Tween(intersects[0].object.position)
                     .to(
                       {
-                        y: 0.5,
+                        y: 0.1,
                       },
                       500
                     )
@@ -831,12 +872,13 @@ this.userData.selectPressed = false;
                   new TWEEN.Tween(this.cube2.position)
                     .to(
                       {
-                        y: 1,
+                        y: 0.2,
                       },
                       500
                     )
                     .easing(TWEEN.Easing.Cubic.Out)
                     .start();
+                    //console.log('controller links');
                 };
 
                 
@@ -846,7 +888,7 @@ this.userData.selectPressed = false;
                   new TWEEN.Tween(kopf.position)
                   .to(
                     {
-                      y: 0.5,
+                      y: 2.5,
                     }, 500
                   )
                   .easing(TWEEN.Easing.Cubic.Out)
@@ -855,7 +897,7 @@ this.userData.selectPressed = false;
                   new TWEEN.Tween(sonde.position)
                   .to(
                     {
-                      y: -0.5,
+                      y: 1.9,
                     }, 500
                   )
                   .easing(TWEEN.Easing.Cubic.Out)
@@ -870,7 +912,7 @@ this.userData.selectPressed = false;
                 };
 
                 animate();
-                downcube1();
+                downcubeleft();
                 explosive();
 
                  // intersects[0].object.position.setY(-0.2);
@@ -881,24 +923,24 @@ this.userData.selectPressed = false;
                 }
 
 
-
-                if(this,this.highlight.visible == true && intersects[0].object.name == "cube2"){
+                // Button 2 für Füllstand
+                if(this.highlight.visible == true && intersects[0].object.name == "cube2"){
                   
                   const stats = Stats();
                   document.body.appendChild(stats.dom);
                   
                   
-                  const downcube2 = () => {
+                  const downcuberight = () => {
                   new TWEEN.Tween(intersects[0].object.position)
                   .to({
-                    y: 0.5
+                    y: 0.1
                   },500)
                   .easing(TWEEN.Easing.Cubic.Out)
                   .start()
                   
                   new TWEEN.Tween(this.cube.position)
                   .to({
-                    y: 1
+                    y: 0.2
                   },500)
                   .easing(TWEEN.Easing.Cubic.Out)
                   .start()
@@ -907,7 +949,7 @@ this.userData.selectPressed = false;
                     new TWEEN.Tween(kopf.position)
                     .to(
                       {
-                        y: 0,
+                        y: 2.1661229133605957,
                       }, 500
                     )
                     .easing(TWEEN.Easing.Cubic.Out)
@@ -916,7 +958,7 @@ this.userData.selectPressed = false;
                     new TWEEN.Tween(sonde.position)
                     .to(
                       {
-                        y: 0,
+                        y: 2.1661229133605957,
                       }, 500
                     )
                     .easing(TWEEN.Easing.Cubic.Out)
@@ -932,23 +974,255 @@ this.userData.selectPressed = false;
                   };
                   
                   animate();
-                  downcube2();
+                  downcuberight();
                   shrink();
 
                   //intersects[0].object.position.setY(-0.2); 
-                  this.cube3.position.set(-3,2,0);
+                 
                  // this.cube.position.setY(0);
                 }
-                
-                
+                // Button für Viscosität
+                if(this.highlight.visible == true && intersects[0].object.name == "cube3"){
+                  const stats = Stats();
+                  document.body.appendChild(stats.dom);
 
+                  const downcuberightvisco = () =>{
+                    new TWEEN.Tween(intersects[0].object.position)
+                    .to({
+                      y:0.1
+                    },500)
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(this.cube4.position)
+                  .to({
+                    y: 0.2
+                  },500)
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start()
+                  }
+
+                  const explosivevisco = () => {
+                    new TWEEN.Tween(flanschzylinder.position)
+                    .to(
+                      {
+                        y: 1, //1.4597450494766235
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+  
+                    new TWEEN.Tween(flanschanschluss.position)
+                    .to(
+                      {
+                        y: 1.8, //1.6163431406021118
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(flansch.position)
+                    .to(
+                      {
+                        y: 1.4, //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(flanschkugel.position)
+                    .to(
+                      {
+                        y: 1.2 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(standardanschluss.position)
+                    .to(
+                      {
+                        y: 1.8 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(standard.position)
+                    .to(
+                      {
+                        y: 1.4 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(nptanschluss.position)
+                    .to(
+                      {
+                        y: 1.8 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(nptzylinder.position)
+                    .to(
+                      {
+                        y: 1.2//1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(npt.position)
+                    .to(
+                      {
+                        y: 1.4 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+                  };
+
+
+
+                  var animate = function () {
+                    requestAnimationFrame(animate);
+                    
+                    TWEEN.update();
+                    stats.update();
+                  };
+
+                  animate();
+                  downcuberightvisco();
+                  explosivevisco();
+                  
+
+
+                }
+                
+                if(this.highlight.visible == true && intersects[0].object.name == "cube4"){
+                  const stats = Stats();
+                  document.body.appendChild(stats.dom);
+
+                  const downcubeleftvisco = () =>{
+                    new TWEEN.Tween(intersects[0].object.position)
+                    .to({
+                      y: 0.1
+                  },500)
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start()
+
+                  new TWEEN.Tween(this.cube3.position)
+                  .to({
+                    y: 0.2
+                  },500)
+                  .easing(TWEEN.Easing.Cubic.Out)
+                  .start()
+                  }
+
+                  const shrinkvisco = () => {
+                    new TWEEN.Tween(flanschzylinder.position)
+                    .to(
+                      {
+                        y: 1.459, //1.4597450494766235
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+  
+                    new TWEEN.Tween(flanschanschluss.position)
+                    .to(
+                      {
+                        y: 1.6163, //1.6163431406021118
+                      }, 500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(flansch.position)
+                    .to(
+                      {
+                        y: 1.616, //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(flanschkugel.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(standardanschluss.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(standard.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(nptanschluss.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(nptzylinder.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+
+                    new TWEEN.Tween(npt.position)
+                    .to(
+                      {
+                        y: 1.616 //1.6163431406021118
+                    },500
+                    )
+                    .easing(TWEEN.Easing.Cubic.Out)
+                    .start();
+                  };
+
+                  var animate = function () {
+                    requestAnimationFrame(animate);
+
+                    TWEEN.update();
+                    stats.update();
+                  };
+                  animate();
+                  downcubeleftvisco();
+                  shrinkvisco();
+
+                }
             } 
             else{
                 this.highlight.visible = false;
                 /*if(this.highlight.visible == false && intersects[0].object.name =="cube1"){
                  this.cube.position.setY(0);
                 // this.cube2.position.setY(0);
-                 this.cube3.position.set(1,1,1);
+               
                 }*/
                 //console.log('controller geht nicht')
 
