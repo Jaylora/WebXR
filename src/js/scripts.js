@@ -44,11 +44,11 @@ class App {
       0.1,
       1000
     );
-    this.camera.position.set(0, 1.6, 8);
+    this.camera.position.set(0, 1.6, 3);
 
     //CREATE SCENE
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x888888);
+    this.scene.background = new THREE.Color(0x0088FF);
 
     // CREATE LIGHT
     //const myLight1 = new THREE.AmbientLight(0x404040, 3);
@@ -69,23 +69,57 @@ class App {
 
 
 
-    const lamp = new THREE.PointLight( 0xffff, 2, 8, 3 )
-    const lampbig = new THREE.PointLight( 0xffffff, 0.5, 8, 7 )
-    const lamp2 = new THREE.PointLight( 0xffff, 2, 8, 3 )
-    const lampbig2 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 )
-    const lamp3 = new THREE.PointLight(0xffff, 2, 8, 3 )
-    const lampbig3 = new THREE.PointLight(0xffffff, 0.5, 8, 7 )
+    const lamp = new THREE.PointLight( 0x00ffff, 2, 8, 3 ) // Blau
+    const lampbig = new THREE.PointLight( 0xffffff, 0.5, 8, 7 ) // Weiß
+    const lamp2 = new THREE.PointLight( 0xffff00, 2, 8, 3 ) // Gelb
+    const lampbig2 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 ) //Weiß
 
+    /*
+      [0  0]
+      [0  0]
+      [0  X]
+    */
+    const lamp3 = new THREE.PointLight(0x00ffff, 2, 8, 3 ) //Blau
+    const lampbig3 = new THREE.PointLight(0xffffff, 0.5, 8, 7 ) // Weiß
+
+    /*
+      [X  0]
+      [0  0]
+      [0  0]
+    */
+    const lamp4 = new THREE.PointLight(0x00ffff,2,8,3 ) // Blau
+    const lampbig4 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 ) // Weiß
+
+    /*
+      [0  0]
+      [X  0]
+      [0  0]
+    */
+ 
+    const lamp5 = new THREE.PointLight(0xffff00,2,8,3 ) //Gelb
+    const lampbig5 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 ) // Weiß
+
+    const lamp6 = new THREE.PointLight(0x00ffff,2,8,3 ) // Blau
+    const lampbig6 = new THREE.PointLight( 0xffffff, 0.5, 8, 7 ) //Weiß
 
 
     lamp.position.set(4.8, 1, -3.5);
     lampbig.position.set(4.8, 1, -3.5);
+
     lamp2.position.set(4.8, 1, 0);
     lampbig2.position.set(4.8, 1, 0);
 
     lamp3.position.set(4.8, 1, 3.5);
     lampbig3.position.set(4.8, 1, 3.5);
 
+    lamp4.position.set(-4.8, 1, -3.5);
+    lampbig4.position.set(-4.8, 1, -3.5);
+
+    lamp5.position.set(-4.8, 1, 0);
+    lampbig5.position.set(-4.8, 1, 0);
+    
+    lamp6.position.set(-4.8, 1, 3.5);
+    lampbig6.position.set(-4.8, 1, 3.5);
   
     
     const sphereSize1 = 0.4;
@@ -93,12 +127,18 @@ class App {
     const lampHelper = new THREE.PointLightHelper(lamp, sphereSize1)
     const lamp2Helper = new THREE.PointLightHelper(lamp2, sphereSize1)
     const lamp3helper = new THREE.PointLightHelper(lamp3,sphereSize1)
+    const lamp4Helper = new THREE.PointLightHelper(lamp4, sphereSize1)
+    const lamp5Helper = new THREE.PointLightHelper(lamp5, sphereSize1)
+    const lamp6Helper = new THREE.PointLightHelper(lamp6, sphereSize1)    
     const lampbigHelper = new THREE.PointLightHelper(lampbig, sphereSize2)
     const lampbig2Helper = new THREE.PointLightHelper(lampbig2, sphereSize2)
     const lampbig3Helper = new THREE.PointLightHelper(lampbig3, sphereSize2)
+    const lampbig4Helper = new THREE.PointLightHelper(lampbig4, sphereSize2)
+    const lampbig5Helper = new THREE.PointLightHelper(lampbig5, sphereSize2)
+    const lampbig6Helper = new THREE.PointLightHelper(lampbig6, sphereSize2)
     
-    this.scene.add(lampHelper, lamp2Helper, lampbigHelper, lampbig2Helper, lamp3helper, lampbig3Helper);
-    this.scene.add( lamp, lamp2, lamp3, lampbig, lampbig2, lampbig3);
+    this.scene.add(lampHelper, lamp2Helper, lampbigHelper, lampbig2Helper, lamp3helper, lampbig3Helper, lamp4Helper, lampbig4Helper, lamp5Helper, lampbig5Helper, lamp6Helper, lampbig6Helper);
+    this.scene.add( lamp, lamp2, lamp3, lampbig, lampbig2, lampbig3, lamp4, lampbig4, lamp5, lampbig5, lamp6, lampbig6);
 
 
     this.scene.add(hemilight, directionalLight);
@@ -114,17 +154,23 @@ class App {
     uplight.target.updateMatrixWorld();
     uplight.position.set(3, 0.2, 0 );
   
-    
-    /*
-    uplight.shadow.mapSize.width = 5;
-    uplight.shadow.mapSize.height = 5;
-    
-    uplight.shadow.camera.near = 500;
-    uplight.shadow.camera.far = 4000;
-    uplight.shadow.camera.fov = 30;
-    */
-    this.scene.add(uplight.target);
-    this.scene.add( uplight );
+    const uplight2 = new THREE.SpotLight( 0xffffff, 15, 2, 0.8,0.5,2);
+    uplight2.castShadow = true;
+    uplight2.target.position.set(4.5, 1, 3.5 )
+    uplight2.target.updateMatrixWorld();
+    uplight2.position.set(3, 0.2, 3.5)
+
+    const uplight3 = new THREE.SpotLight( 0xffffff, 15, 2, 0.8,0.5,2);
+    uplight3.castShadow = true;
+    uplight3.target.position.set(4.5, 1, -3.5 )
+    uplight3.target.updateMatrixWorld();
+    uplight3.position.set(3, 0.2, -3.5)
+
+
+    this.scene.add(uplight.target, uplight2.target, uplight3.target);
+    this.scene.add( uplight, uplight2, uplight3 );
+
+
     
 
 
@@ -139,7 +185,9 @@ class App {
    
 
 const spotLightHelper = new THREE.SpotLightHelper( uplight );
-this.scene.add( spotLightHelper );
+const spotLightHelper2 = new THREE.SpotLightHelper(uplight2);
+const spotLightHelper3 = new THREE.SpotLightHelper(uplight3);
+this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
 
     //Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -247,8 +295,8 @@ this.scene.add( spotLightHelper );
 
    
 
-this.cube.position.set(-3,0,-4);
-this.cube2.position.set(3,0,-4);
+this.cube.position.set(-3,1,-4);
+this.cube2.position.set(3,1,-4);
 this.cube3.position.set(1,1,1);
     
 
@@ -438,7 +486,7 @@ tilesAmbientOcclusionMap.repeat.set(25, 1);
 */
 //Wand
 const wand2 = new THREE.Mesh(
-  new THREE.PlaneGeometry(10, 3, 400, 400),
+  new THREE.PlaneGeometry(10.5, 5, 400, 400),
   new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     map: tilesBaseColor,
@@ -454,13 +502,13 @@ wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
 wand2.position.x = 5;
 wand2.position.z = 0;
 wand2.position.y = 1.4;
-wand2.rotation.set(0,Math.PI / 2,0);
+wand2.rotation.set(0,- Math.PI / 2,0);
 this.scene.add(wand2);
 wand2.castShadow = true;
 wand2.receiveShadow = true;
 
 const wand3 = new THREE.Mesh(
-  new THREE.PlaneGeometry(10, 3, 400, 400),
+  new THREE.PlaneGeometry(10.5, 5, 400, 400),
   new THREE.MeshStandardMaterial({
     side: THREE.DoubleSide,
     map: tilesBaseColor,
@@ -481,6 +529,49 @@ this.scene.add(wand3);
 wand3.castShadow = true;
 wand3.receiveShadow = true;
     
+const wand4 = new THREE.Mesh(
+  new THREE.PlaneGeometry(10.5, 5, 400, 400),
+  new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    map: tilesBaseColor,
+    normalMap: tilesNormalMap,
+    displacementMap: tilesHeightMap,
+    displacementScale: 0.05,
+    roughnessMap: tilesRoughnessMap,
+    roughness: 1,
+   // aoMap: tilesAmbientOcclusionMap,
+  })
+);
+
+wand4.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
+wand4.position.y = 1.4;
+wand4.position.z = 5;
+wand4.rotation.set(0,Math.PI/2*180, 0)
+this.scene.add(wand4);
+wand4.castShadow = true;
+wand4.receiveShadow = true;
+
+const wand5 = new THREE.Mesh(
+  new THREE.PlaneGeometry(10.5, 5, 400, 400),
+  new THREE.MeshStandardMaterial({
+    side: THREE.DoubleSide,
+    map: tilesBaseColor,
+    normalMap: tilesNormalMap,
+    displacementMap: tilesHeightMap,
+    displacementScale: 0.05,
+    roughnessMap: tilesRoughnessMap,
+    roughness: 1,
+   // aoMap: tilesAmbientOcclusionMap,
+  })
+);
+
+wand5.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
+wand5.position.y = 1.4;
+wand5.position.z = -5;
+this.scene.add(wand5);
+
+wand5.castShadow = true;
+wand5.receiveShadow = true;
   }
   
   
@@ -598,7 +689,7 @@ wand3.receiveShadow = true;
         console.log("TESTDOOR")
         console.log(mymodels);
         console.log("TESTDOOR")
-        mymodels[3].name = "kerze";
+        //mymodels[3].name = "kerze";
        // mymodels[1].position.set(0,0,0);
         
       
@@ -717,7 +808,7 @@ this.userData.selectPressed = false;
                   new TWEEN.Tween(intersects[0].object.position)
                     .to(
                       {
-                        y: -0.5,
+                        y: 0.5,
                       },
                       500
                     )
@@ -727,7 +818,7 @@ this.userData.selectPressed = false;
                   new TWEEN.Tween(this.cube2.position)
                     .to(
                       {
-                        y: 0,
+                        y: 1,
                       },
                       500
                     )
@@ -762,14 +853,14 @@ this.userData.selectPressed = false;
                   const downcube2 = () => {
                   new TWEEN.Tween(intersects[0].object.position)
                   .to({
-                    y: -0.5
+                    y: 0.5
                   },500)
                   .easing(TWEEN.Easing.Cubic.Out)
                   .start()
                   
                   new TWEEN.Tween(this.cube.position)
                   .to({
-                    y: 0
+                    y: 1
                   },500)
                   .easing(TWEEN.Easing.Cubic.Out)
                   .start()
