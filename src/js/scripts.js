@@ -65,7 +65,7 @@ class App {
     directionalLight.shadow.camera.near = 0.5; // default
     directionalLight.shadow.camera.far = 500; // default
 
-    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 1);
+    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 0.8);
    
 
 
@@ -144,7 +144,8 @@ class App {
 
     this.scene.add(hemilight, directionalLight);
 
-    
+
+
 
     
 
@@ -167,14 +168,23 @@ class App {
     uplight3.target.updateMatrixWorld();
     uplight3.position.set(3, 0.2, -3.5)
 
+    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+
 
     this.scene.add(uplight.target, uplight2.target, uplight3.target);
-    this.scene.add( uplight, uplight2, uplight3 );
+    this.scene.add( uplight, uplight2, uplight3, light );
 
+/*
+    const viscospot = new THREE.SpotLight(0xffffff, 15,8,0.6,0.5,2);
+    viscospot.castShadow = true;
+    viscospot.target.position.set(-3, 2, 0);
+    viscospot.target.updateMatrixWorld();
+    viscospot.position.set(0,0,0);
 
-    
+    this.scene.add(viscospot.target)
+    this.scene.add(viscospot);
 
-
+**/
 
     //HILFE
     const dirLightHelper = new THREE.DirectionalLightHelper(
@@ -188,7 +198,8 @@ class App {
 const spotLightHelper = new THREE.SpotLightHelper( uplight );
 const spotLightHelper2 = new THREE.SpotLightHelper(uplight2);
 const spotLightHelper3 = new THREE.SpotLightHelper(uplight3);
-this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3 );
+
+this.scene.add( spotLightHelper, spotLightHelper2, spotLightHelper3);
 
     //Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -676,10 +687,13 @@ wand5.receiveShadow = true;
             me.scene.add(gltf.scene);
              var mygltf = gltf.scene;
   
+             mygltf.children[i].material.metalness =0.5;
             gltf.scene; // THREE.Group
             gltf.cameras; // Array<THREE.Camera>
             gltf.asset; // Object
            
+            
+
             var saythename = mygltf.getObjectsByProperty(myModels[i]);
             console.log("SAY THE NAME")
             console.log(saythename);
@@ -716,8 +730,7 @@ wand5.receiveShadow = true;
         console.log(mymodels);
         console.log("TESTDOOR")
 
-       
-        
+      
         //mymodels[3].name = "kerze";
        // mymodels[1].position.set(0,0,0);
         
