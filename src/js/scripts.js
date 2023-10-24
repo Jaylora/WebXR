@@ -687,7 +687,7 @@ wand5.receiveShadow = true;
             me.scene.add(gltf.scene);
              var mygltf = gltf.scene;
   
-             mygltf.children[i].material.metalness =0.5;
+             mygltf.children[i].material.metalness =0.4;
             gltf.scene; // THREE.Group
             gltf.cameras; // Array<THREE.Camera>
             gltf.asset; // Object
