@@ -553,7 +553,7 @@ class App {
   }
 
   loadMyFiles() {
-    var myModels = ["lampe.glb", /*"kabel-sonde.glb",*/ "viscosity.glb"];
+    var myModels = ["lampe.glb", "kabel-sonde.glb", "viscosity.glb"];
     let me = this;
 
         
