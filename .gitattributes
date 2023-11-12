@@ -1,0 +1,2 @@
+src/textures/kabel-sonde.glb filter=lfs diff=lfs merge=lfs -text
+kabel-sonde.glb filter=lfs diff=lfs merge=lfs -text
