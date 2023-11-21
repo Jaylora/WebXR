@@ -1272,22 +1272,32 @@ class App {
                 kugelCurve.visible = true;
                 kugelPlane.visible = true;
                 kugelText.visible = true;
-                new TWEEN.Tween(kugelCurve.material && kugelPlane.material && kugelText.material)
+                new TWEEN.Tween(kugelCurve.material  && kugelText.material)
                 .to({
                   opacity: 1
                 }, 500)
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
 
-                new TWEEN.Tween(zylinderLinksText.material && zylinderLinksPlane.material && zylinderLinksCurve.material)
+                new TWEEN.Tween(zylinderLinksText.material && zylinderLinksCurve.material)
                 .to({
                   opacity: 1
-                }, 500)
+                }, 500) 
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
 
-
-
+                new TWEEN.Tween(kugelPlane.material && zylinderLinksPlane.material)
+                .to({
+                  opacity: 0.5
+                }, 500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
+                new TWEEN.Tween(flanschplane.material )
+                .to({
+                  opacity: 0.5
+                }, 500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
                      
 
                 new TWEEN.Tween( flanschplane.material && flanschtext.material)
