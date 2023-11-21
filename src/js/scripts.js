@@ -737,35 +737,35 @@ class App {
         
 
         zylinderLinksCurve.visible = false;
-       // zylinderLinksCurve.material.transparent = true;
+       
         zylinderLinksCurve.material.opacity = 0;
 
         zylinderLinksText.visible = false;
-        //zylinderLinksText.material.transparent = true;
+       
         zylinderLinksText.material.opacity = 0;
 
         zylinderLinksPlane.visible = false;
-       // zylinderLinksPlane.material.transparent = true;
+       
         zylinderLinksPlane.material.opacity = 0;
 
         kugelCurve.visible = false;
-       // kugelCurve.material.transparent = true;
+      
         kugelCurve.material.opacity = 0;
 
         kugelPlane.visible = false;
-       // kugelPlane.material.transparent = true;
+       
         kugelPlane.material.opacity = 0;
 
         kugelText.visible = false;
-       // kugelText.material.transparent = true;
+      
         kugelText.material.opacity = 0;
 
         flanschplane.visible = false;
-       // flanschplane.material.transparent = true;
+      
         flanschplane.material.opacity = 0 ;
 
         flanschtext.visible = false;
-        //flanschtext.material.transparent = true;
+       
         flanschtext.material.opacity = 0;
 
         intersects[0].object.add(this.highlight);
@@ -1272,16 +1272,16 @@ class App {
                 kugelCurve.visible = true;
                 kugelPlane.visible = true;
                 kugelText.visible = true;
-                new TWEEN.Tween(kugelCurve.material  && kugelText.material)
+                new TWEEN.Tween(kugelCurve.material  && zylinderLinksCurve.material)
                 .to({
-                  opacity: 1
+                  opacity: 0.5
                 }, 500)
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
 
-                new TWEEN.Tween(zylinderLinksText.material && zylinderLinksCurve.material)
+                new TWEEN.Tween(zylinderLinksText.material &&kugelText.material )
                 .to({
-                  opacity: 1
+                  opacity: 0.5
                 }, 500) 
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
