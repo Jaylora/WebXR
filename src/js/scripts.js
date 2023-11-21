@@ -164,7 +164,7 @@ class App {
 
 
     //Vitrinen
-      const vitrinegeo = new THREE.BoxGeometry (1, 0.3, 3);
+      //const vitrinegeo = new THREE.BoxGeometry (1, 0.3, 3);
       const standmat = new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0xffffff, specular: 0xffff50, shininess: 40, transparent: true, opacity:0.4
       });
 
@@ -706,16 +706,18 @@ class App {
             */
       //  console.log(myscene);
         const kabel = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-kabel-kabel");
-        const kopf = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Kopf");
+       const kopf = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Kopf");
         const extention = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Verlängerung");
-        const sonde = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Sonde");
+       const sonde = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Sonde");
 
-        const zylinderLinksCurve = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_curve");
+        const zylinderLinksCurve = myscene.getObjectByName("viscosity").getObjectByName("Zylinder-links-curve");
         const zylinderLinksText = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_text");
         const zylinderLinksPlane = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_plane");
         const kugelText = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
         const kugelCurve = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
         const kugelPlane = myscene.getObjectByName("viscosity").getObjectByName("Kugel_Plane");
+        const flanschplane = myscene.getObjectByName("viscosity").getObjectByName("Flansch-plane");
+        const flanschtext = myscene.getObjectByName("viscosity").getObjectByName("Prozessverbindung_text");
 
         const flanschzylinder = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Zylinder");
         const flanschanschluss = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Anschluss");
@@ -732,29 +734,39 @@ class App {
         const nptbody = myscene.getObjectByName("viscosity").getObjectByName("NPT-Körper");
         const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
 
+        
 
-        zylinderLinksCurve.visible=false;
-        zylinderLinksCurve.material.transparent = true;
-       zylinderLinksCurve.material.opacity = 0;
+        zylinderLinksCurve.visible = false;
+       // zylinderLinksCurve.material.transparent = true;
+        zylinderLinksCurve.material.opacity = 0;
+
         zylinderLinksText.visible = false;
-        zylinderLinksText.material.transparent = true;
+        //zylinderLinksText.material.transparent = true;
         zylinderLinksText.material.opacity = 0;
 
         zylinderLinksPlane.visible = false;
-        zylinderLinksPlane.material.transparent = true;
+       // zylinderLinksPlane.material.transparent = true;
         zylinderLinksPlane.material.opacity = 0;
 
         kugelCurve.visible = false;
-        kugelCurve.material.transparent = true;
+       // kugelCurve.material.transparent = true;
         kugelCurve.material.opacity = 0;
 
         kugelPlane.visible = false;
-        kugelPlane.material.transparent = true;
+       // kugelPlane.material.transparent = true;
         kugelPlane.material.opacity = 0;
 
         kugelText.visible = false;
-        kugelText.material.transparent = true;
+       // kugelText.material.transparent = true;
         kugelText.material.opacity = 0;
+
+        flanschplane.visible = false;
+       // flanschplane.material.transparent = true;
+        flanschplane.material.opacity = 0 ;
+
+        flanschtext.visible = false;
+        //flanschtext.material.transparent = true;
+        flanschtext.material.opacity = 0;
 
         intersects[0].object.add(this.highlight);
         this.highlight.visible = true;
@@ -1254,20 +1266,12 @@ class App {
                 });
                 zylinderLinksText.visible = true;
                 zylinderLinksPlane.visible = true;
-                zylinderLinksCurve.visible=true;
+                zylinderLinksCurve.visible = true;
+                flanschplane.visible = true;
+                flanschtext.visible = true;
                 kugelCurve.visible = true;
                 kugelPlane.visible = true;
                 kugelText.visible = true;
-
-                new TWEEN.Tween(zylinderLinksText.material && zylinderLinksCurve.material && zylinderLinksPlane.material)
-                .to({
-                  
-                  opacity: 1
-
-                },500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-
                 new TWEEN.Tween(kugelCurve.material && kugelPlane.material && kugelText.material)
                 .to({
                   opacity: 1
@@ -1275,9 +1279,27 @@ class App {
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
 
+                new TWEEN.Tween(zylinderLinksText.material && zylinderLinksPlane.material && zylinderLinksCurve.material)
+                .to({
+                  opacity: 1
+                }, 500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
+
+
+
+                     
+
+                new TWEEN.Tween( flanschplane.material && flanschtext.material)
+                .to({
+                  
+                  opacity: 1
+
+                },500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
                 
-        
-       
+                console.log(myscene.getObjectByName("viscosity"));
         
           };
           var animate = function () {
