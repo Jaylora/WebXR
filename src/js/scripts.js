@@ -591,7 +591,7 @@ class App {
           console.log(saythename);
           console.log("SAY THE NAME");
 
-          
+          me.room.add(gltf.scene);
           
         },
         function (xhr) {
@@ -710,13 +710,13 @@ class App {
         const extention = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Verlängerung");
        const sonde = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Sonde");
 
-        const zylinderLinksCurve = myscene.getObjectByName("viscosity").getObjectByName("Zylinder-links-curve");
+        
         const zylinderLinksText = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_text");
-        const zylinderLinksPlane = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_plane");
+        
         const kugelText = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
         const kugelCurve = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
-        const kugelPlane = myscene.getObjectByName("viscosity").getObjectByName("Kugel_Plane");
-        const flanschplane = myscene.getObjectByName("viscosity").getObjectByName("Flansch-plane");
+        
+        
         const flanschtext = myscene.getObjectByName("viscosity").getObjectByName("Prozessverbindung_text");
 
         const flanschzylinder = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Zylinder");
@@ -734,40 +734,26 @@ class App {
         const nptbody = myscene.getObjectByName("viscosity").getObjectByName("NPT-Körper");
         const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
 
+     
+
         
-
-        zylinderLinksCurve.visible = false;
        
-        zylinderLinksCurve.material.opacity = 0;
-
         zylinderLinksText.visible = false;
        
         zylinderLinksText.material.opacity = 0;
 
-        zylinderLinksPlane.visible = false;
        
-        zylinderLinksPlane.material.opacity = 0;
-
-        kugelCurve.visible = false;
-      
-        kugelCurve.material.opacity = 0;
-
-        kugelPlane.visible = false;
        
-        kugelPlane.material.opacity = 0;
-
+       
+       
         kugelText.visible = false;
       
         kugelText.material.opacity = 0;
 
-        flanschplane.visible = false;
-      
-        flanschplane.material.opacity = 0 ;
-
+        
         flanschtext.visible = false;
        
-        flanschtext.material.opacity = 0;
-
+        
         intersects[0].object.add(this.highlight);
         this.highlight.visible = true;
 
@@ -776,6 +762,7 @@ class App {
         //Buttons werden gedrückt
         // Button für Füllstand explode
         if ( this.highlight.visible == true && intersects[0].object.name == "cube1"){
+          this.flanschtext.position.set = (-2.530477523803711,1.6553013324737549,2.978816032409668 );
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -807,6 +794,8 @@ class App {
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
+              
+            //  (-2.530477523803711,1.6553013324737549,2.978816032409668 )
               this.cube2.material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color("rgb(0, 174, 255)"),
                 specular: new THREE.Color("rgb(255, 255, 255)"),
@@ -1240,6 +1229,36 @@ class App {
           downcubeleftvisco();
           shrinkvisco();
         }
+
+        // Mit der Auswahl des Bestandteils, öffnet sich auch ein Info fenster
+
+        if(intersects[0].object.name=="Flansch"){
+          const stats = Stats();
+          document.body.appendChild(stats.dom);
+          console.log("Der BUTTON IST GEDRÜCKT!");
+          const showflanschinfo =() => {
+           
+                flanschtext.visible = true;
+                new TWEEN.Tween( flanschtext.material )
+                .to({
+                  
+                  opacity: 1
+
+                },500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
+              }
+              var animate = function () {
+                requestAnimationFrame(animate);
+    
+                TWEEN.update();
+                stats.update();
+              };
+              animate();
+              showflanschinfo();
+            }
+
+        
         // Button für Informationen Visco
         if( this.highlight.visible == true && intersects[0].object.name == "viscobutton3"){
             const stats = Stats();
@@ -1265,50 +1284,16 @@ class App {
                   opacity: 1,
                 });
                 zylinderLinksText.visible = true;
-                zylinderLinksPlane.visible = true;
-                zylinderLinksCurve.visible = true;
-                flanschplane.visible = true;
-                flanschtext.visible = true;
-                kugelCurve.visible = true;
-                kugelPlane.visible = true;
                 kugelText.visible = true;
-                new TWEEN.Tween(kugelCurve.material  && zylinderLinksCurve.material)
-                .to({
-                  opacity: 0.5
-                }, 500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-
-                new TWEEN.Tween(zylinderLinksText.material &&kugelText.material )
+                
+                new TWEEN.Tween(zylinderLinksText.material && kugelText.material )
                 .to({
                   opacity: 0.5
                 }, 500) 
                 .easing(TWEEN.Easing.Linear.None)
                 .start();
 
-                new TWEEN.Tween(kugelPlane.material && zylinderLinksPlane.material)
-                .to({
-                  opacity: 0.5
-                }, 500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-                new TWEEN.Tween(flanschplane.material )
-                .to({
-                  opacity: 0.5
-                }, 500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-                     
-
-                new TWEEN.Tween( flanschplane.material && flanschtext.material)
-                .to({
-                  
-                  opacity: 1
-
-                },500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-                
+                                                 
                 console.log(myscene.getObjectByName("viscosity"));
         
           };
