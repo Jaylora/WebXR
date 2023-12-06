@@ -714,9 +714,8 @@ class App {
         const zylinderLinksText = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_text");
         
         const kugelText = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
-        const kugelCurve = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
-        
-        
+        const variventtext = myscene.getObjectByName("viscosity").getObjectByName("Varivent-text");
+        const npttext = myscene.getObjectByName("viscosity").getObjectByName("NPT-text");
         const flanschtext = myscene.getObjectByName("viscosity").getObjectByName("Prozessverbindung_text");
 
         const flanschzylinder = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Zylinder");
@@ -745,12 +744,9 @@ class App {
        
        
        
-       
+       npttext.visible = false;
+       variventtext.visible = false;
         kugelText.visible = false;
-      
-        kugelText.material.opacity = 0;
-
-        
         flanschtext.visible = false;
        
         
@@ -1230,12 +1226,13 @@ class App {
           shrinkvisco();
         }
 
+
         // Mit der Auswahl des Bestandteils, öffnet sich auch ein Info fenster
 
         if(intersects[0].object.name=="Flansch"){
           const stats = Stats();
           document.body.appendChild(stats.dom);
-          console.log("Der BUTTON IST GEDRÜCKT!");
+          console.log("FLANSCH AUSGEWÄHLT");
           const showflanschinfo =() => {
            
                 flanschtext.visible = true;
@@ -1257,7 +1254,78 @@ class App {
               animate();
               showflanschinfo();
             }
-
+      if(intersects[0].object.name =="Flansch-Kugel"){
+              const stats = Stats();
+              document.body.appendChild(stats.dom);
+              console.log("KUGEL AUSGEWÄHLT")
+              const showkugelinfo=() => {
+                kugelText.visible = true;
+                new TWEEN.Tween(kugelText.material)
+                .to({
+                  opacity: 1
+                }, 500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
+              }
+              var animate = function () {
+                requestAnimationFrame(animate);
+    
+                TWEEN.update();
+                stats.update();
+              };
+              animate();
+              showkugelinfo();
+            }
+            if(intersects[0].object.name=="Flansch-Zylinder"){
+              const stats = Stats();
+              document.body.appendChild(stats.dom);
+              console.log("FLANSCH ZYLINDER AUSGEWÄHLT");
+              const showflanschzylinderinfo =() => {
+               
+                    flanschtext.visible = true;
+                    new TWEEN.Tween( flanschtext.material )
+                    .to({
+                      
+                      opacity: 1
+    
+                    },500)
+                    .easing(TWEEN.Easing.Linear.None)
+                    .start();
+                  }
+                  var animate = function () {
+                    requestAnimationFrame(animate);
+        
+                    TWEEN.update();
+                    stats.update();
+                  };
+                  animate();
+                  showflanschzylinderinfo();
+                }
+        if(intersects[0].object.name == "NPT"){
+          const stats = Stats();
+              document.body.appendChild(stats.dom);
+              console.log("NPT AUSGEWÄHLT");
+              const shownptinfo =() => {
+               
+                    npttext.visible = true;
+                    new TWEEN.Tween( npttext.material )
+                    .to({
+                      
+                      opacity: 1
+    
+                    },500)
+                    .easing(TWEEN.Easing.Linear.None)
+                    .start();
+                  }
+                  var animate = function () {
+                    requestAnimationFrame(animate);
+        
+                    TWEEN.update();
+                    stats.update();
+                  };
+                  animate();
+                  shownptinfo();
+        }
         
         // Button für Informationen Visco
         if( this.highlight.visible == true && intersects[0].object.name == "viscobutton3"){
