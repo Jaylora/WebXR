@@ -717,6 +717,7 @@ class App {
         const variventtext = myscene.getObjectByName("viscosity").getObjectByName("Varivent-text");
         const npttext = myscene.getObjectByName("viscosity").getObjectByName("NPT-text");
         const flanschtext = myscene.getObjectByName("viscosity").getObjectByName("Prozessverbindung_text");
+        
 
         const flanschzylinder = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Zylinder");
         const flanschanschluss = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Anschluss");
@@ -733,7 +734,7 @@ class App {
         const nptbody = myscene.getObjectByName("viscosity").getObjectByName("NPT-Körper");
         const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
 
-     
+        
 
         
        
@@ -1325,6 +1326,33 @@ class App {
                   };
                   animate();
                   shownptinfo();
+        }
+
+        if(intersects[0].object.name =="Standard"){
+          const stats = Stats();
+          document.body.appendChild(stats.dom);
+          console.log("VARIVENT AUSGEWÄHLT");
+          const showvariventinfo =() => {
+           
+                variventtext.visible = true;
+                new TWEEN.Tween( variventtext.material )
+                .to({
+                  
+                  opacity: 1
+
+                },500)
+                .easing(TWEEN.Easing.Linear.None)
+                .start();
+              }
+              var animate = function () {
+                requestAnimationFrame(animate);
+    
+                TWEEN.update();
+                stats.update();
+              };
+              animate();
+              showvariventinfo();
+
         }
         
         // Button für Informationen Visco
