@@ -33,6 +33,10 @@ class App {
   workingVector;
   candle;
   object;
+  tank;
+  INTERSECTION;
+  wasser;
+
 
   constructor() {
     this.container = document.createElement("div");
@@ -101,7 +105,11 @@ class App {
 
     //CREATE CUBE TO INTERACT
     const boxgeometry = new THREE.CylinderGeometry(0.2,0.2,0.2,24,3);
+    const tankgeometry = new THREE.CylinderGeometry(1,1,4.1,10,4,false,0,3);
+    const wassergeo = new THREE.CylinderGeometry(0.9,0.9,2,10,4,false,0,3.15);
+    const wasserplane = new THREE.PlaneGeometry(1.8,2,1,2);
 
+  
      
       
     
@@ -111,6 +119,19 @@ class App {
       specular: new THREE.Color("rgb(255, 255, 255)"),
       shininess: 40
     });
+
+    const tankmaterial = new THREE.MeshLambertMaterial({
+      color: new THREE.Color("rgb(140,140,140,)"),
+      side: THREE.DoubleSide
+      
+    })
+
+    const wassermaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color("rgb(3, 165, 252)"),
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide
+    })
 
     //Würfel erstellen und zum Raumm hinzufügen
     //COMBINE CUBE TO INTERACT WITH MATERIAL
@@ -142,6 +163,19 @@ class App {
     this.viscobutton3.castShadow = true;
     this.viscobutton3.name = "viscobutton3";
 
+    this.tank =  new THREE.Mesh(tankgeometry, tankmaterial);
+    this.room.add(this.tank);
+    this.tank.castShadow = true;
+    this.tank.name = "MainTank";
+
+    this.wasser =  new THREE.Mesh(wassergeo, wassermaterial);
+    this.wassercloser = new THREE.Mesh(wasserplane, wassermaterial);
+    this.room.add(this.wasser, this.wassercloser);
+    this.wasser.castShadow = true;
+    this.wassercloser.castShadow = true;
+    this.wasser.name = "Wasser";
+    this.wassercloser.name = "Wasser_Abschluss"
+
     //Highlight für Würfel
     this.highlight = new THREE.Mesh(
       boxgeometry,
@@ -154,6 +188,10 @@ class App {
     this.cube3.position.set(-1.75, 1, 0.5);
     this.cube4.position.set(-1.75, 1, 1);
     this.viscobutton3.position.set(-1.75, 1, 0);
+    this.tank.position.set(2.5,0,-2.1);
+    this.wasser.position.set(2.5,0,-2.1);
+    this.wassercloser.position.set(2.5,0,-2.1);
+    this.wassercloser.rotateY(Math.PI / 180 * 90)
 
     //HILFE
     const axesHelper = new THREE.AxesHelper(5);
@@ -637,6 +675,21 @@ class App {
      
 */
       this.userData.selectPressed = false;
+
+      // TELEPORT
+     /* if ( INTERSECTION ) {
+
+        const offsetPosition = { x: - INTERSECTION.x, y: - INTERSECTION.y, z: - INTERSECTION.z, w: 1 };
+        const offsetRotation = new THREE.Quaternion();
+        const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+        const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace( transform );
+
+        renderer.xr.setReferenceSpace( teleportSpaceOffset );
+
+      } */
+
+
+
     }
 
     this.controllers.forEach((controller) => {
@@ -680,6 +733,7 @@ class App {
     
 
     if (controller.userData.selectPressed) {
+
       // VR-Buttons
       controller.children[0].scale.z = 10;
       this.scene.add(this.highlight);
@@ -693,6 +747,15 @@ class App {
 
       //const intersects2 = this.raycaster.intersectObject(this.room.children[0]); //cube
       const intersects = this.raycaster.intersectObjects(this.room.children); //cube2
+
+      // TELEPORT
+     /* const teleport = raycaster.intersectObjects( [ plane ] );
+
+					if ( intersects.length > 0 ) {
+
+						INTERSECTION = teleport[ 0 ].point;
+
+					} */
 
       // console.log(this.room.children[0]);
       // console.log(intersects);
@@ -1230,129 +1293,131 @@ class App {
 
         // Mit der Auswahl des Bestandteils, öffnet sich auch ein Info fenster
 
-        if(intersects[0].object.name=="Flansch"){
+        if (intersects[0].object.name == "Flansch") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("FLANSCH AUSGEWÄHLT");
-          const showflanschinfo =() => {
-           
-                flanschtext.visible = true;
-                new TWEEN.Tween( flanschtext.material )
-                .to({
-                  
-                  opacity: 1
+          const showflanschinfo = () => {
+            flanschtext.visible = true;
+            new TWEEN.Tween(flanschtext.material)
+              .to(
+                {
+                  opacity: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Linear.None)
+              .start();
+          };
+          var animate = function () {
+            requestAnimationFrame(animate);
 
-                },500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-              }
-              var animate = function () {
-                requestAnimationFrame(animate);
-    
-                TWEEN.update();
-                stats.update();
-              };
-              animate();
-              showflanschinfo();
-            }
-      if(intersects[0].object.name =="Flansch-Kugel"){
-              const stats = Stats();
-              document.body.appendChild(stats.dom);
-              console.log("KUGEL AUSGEWÄHLT")
-              const showkugelinfo=() => {
-                kugelText.visible = true;
-                new TWEEN.Tween(kugelText.material)
-                .to({
-                  opacity: 1
-                }, 500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-              }
-              var animate = function () {
-                requestAnimationFrame(animate);
-    
-                TWEEN.update();
-                stats.update();
-              };
-              animate();
-              showkugelinfo();
-            }
-            if(intersects[0].object.name=="Flansch-Zylinder"){
-              const stats = Stats();
-              document.body.appendChild(stats.dom);
-              console.log("FLANSCH ZYLINDER AUSGEWÄHLT");
-              const showflanschzylinderinfo =() => {
-               
-                    flanschtext.visible = true;
-                    new TWEEN.Tween( flanschtext.material )
-                    .to({
-                      
-                      opacity: 1
-    
-                    },500)
-                    .easing(TWEEN.Easing.Linear.None)
-                    .start();
-                  }
-                  var animate = function () {
-                    requestAnimationFrame(animate);
-        
-                    TWEEN.update();
-                    stats.update();
-                  };
-                  animate();
-                  showflanschzylinderinfo();
-                }
-        if(intersects[0].object.name == "NPT"){
+            TWEEN.update();
+            stats.update();
+          };
+          animate();
+          showflanschinfo();
+        }
+        if (intersects[0].object.name == "Flansch-Kugel") {
           const stats = Stats();
-              document.body.appendChild(stats.dom);
-              console.log("NPT AUSGEWÄHLT");
-              const shownptinfo =() => {
-               
-                    npttext.visible = true;
-                    new TWEEN.Tween( npttext.material )
-                    .to({
-                      
-                      opacity: 1
-    
-                    },500)
-                    .easing(TWEEN.Easing.Linear.None)
-                    .start();
-                  }
-                  var animate = function () {
-                    requestAnimationFrame(animate);
-        
-                    TWEEN.update();
-                    stats.update();
-                  };
-                  animate();
-                  shownptinfo();
+          document.body.appendChild(stats.dom);
+          console.log("KUGEL AUSGEWÄHLT");
+          const showkugelinfo = () => {
+            kugelText.visible = true;
+            new TWEEN.Tween(kugelText.material)
+              .to(
+                {
+                  opacity: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Linear.None)
+              .start();
+          };
+          var animate = function () {
+            requestAnimationFrame(animate);
+
+            TWEEN.update();
+            stats.update();
+          };
+          animate();
+          showkugelinfo();
+        }
+        if (intersects[0].object.name == "Flansch-Zylinder") {
+          const stats = Stats();
+          document.body.appendChild(stats.dom);
+          console.log("FLANSCH ZYLINDER AUSGEWÄHLT");
+          const showflanschzylinderinfo = () => {
+            flanschtext.visible = true;
+            new TWEEN.Tween(flanschtext.material)
+              .to(
+                {
+                  opacity: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Linear.None)
+              .start();
+          };
+          var animate = function () {
+            requestAnimationFrame(animate);
+
+            TWEEN.update();
+            stats.update();
+          };
+          animate();
+          showflanschzylinderinfo();
+        }
+        if (intersects[0].object.name == "NPT") {
+          const stats = Stats();
+          document.body.appendChild(stats.dom);
+          console.log("NPT AUSGEWÄHLT");
+          const shownptinfo = () => {
+            npttext.visible = true;
+            new TWEEN.Tween(npttext.material)
+              .to(
+                {
+                  opacity: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Linear.None)
+              .start();
+          };
+          var animate = function () {
+            requestAnimationFrame(animate);
+
+            TWEEN.update();
+            stats.update();
+          };
+          animate();
+          shownptinfo();
         }
 
-        if(intersects[0].object.name =="Standard"){
+        if (intersects[0].object.name == "Standard") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("VARIVENT AUSGEWÄHLT");
-          const showvariventinfo =() => {
-           
-                variventtext.visible = true;
-                new TWEEN.Tween( variventtext.material )
-                .to({
-                  
-                  opacity: 1
+          const showvariventinfo = () => {
+            variventtext.visible = true;
+            new TWEEN.Tween(variventtext.material)
+              .to(
+                {
+                  opacity: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Linear.None)
+              .start();
+          };
+          var animate = function () {
+            requestAnimationFrame(animate);
 
-                },500)
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-              }
-              var animate = function () {
-                requestAnimationFrame(animate);
-    
-                TWEEN.update();
-                stats.update();
-              };
-              animate();
-              showvariventinfo();
-
+            TWEEN.update();
+            stats.update();
+          };
+          animate();
+          showvariventinfo();
         }
         
         // Button für Informationen Visco
@@ -1416,7 +1481,13 @@ class App {
                 console.log('highlight 2 geht nicht')*/
       }
     }
-  }
+
+    // TELEPORT
+ /*   if ( INTERSECTION ) marker.position.copy( INTERSECTION );
+
+				marker.visible = INTERSECTION !== undefined;
+        */
+  } 
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -1426,6 +1497,11 @@ class App {
   }
 
   render() {
+    // TELEPORT
+   // this.INTERSECTION = undefined;
+
+
+
     this.stats.update();
 
     
