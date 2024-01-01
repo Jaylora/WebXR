@@ -35,7 +35,8 @@ class App {
   object;
   tank;
   INTERSECTION;
-  wasser;
+  water;
+  alarm;
 
 
   constructor() {
@@ -106,8 +107,10 @@ class App {
     //CREATE CUBE TO INTERACT
     const boxgeometry = new THREE.CylinderGeometry(0.2,0.2,0.2,24,3);
     const tankgeometry = new THREE.CylinderGeometry(1,1,4.1,10,4,false,0,3);
-    const wassergeo = new THREE.CylinderGeometry(0.9,0.9,2,10,4,false,0,3.15);
-    const wasserplane = new THREE.PlaneGeometry(1.8,2,1,2);
+    const watergeo = new THREE.CylinderGeometry(0.9,0.9,2,10,4,false,0,3.15);
+    const waterplane = new THREE.PlaneGeometry(1.8,2,1,2);
+
+    const alarmgeo = new THREE.CylinderGeometry(0.2,0.2,0.5,8,1);
 
   
      
@@ -126,11 +129,20 @@ class App {
       
     })
 
-    const wassermaterial = new THREE.MeshBasicMaterial({
+    const watermaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color("rgb(3, 165, 252)"),
       transparent: true,
       opacity: 0.5,
       side: THREE.DoubleSide
+    })
+
+    const alarmmaterial = new THREE.MeshStandardMaterial({
+      color: 0xff0000,
+      transparent: true,
+      opacity: 0.2,
+      side: THREE.DoubleSide,
+      emmissive: 0xff0000
+      
     })
 
     //Würfel erstellen und zum Raumm hinzufügen
@@ -168,13 +180,17 @@ class App {
     this.tank.castShadow = true;
     this.tank.name = "MainTank";
 
-    this.wasser =  new THREE.Mesh(wassergeo, wassermaterial);
-    this.wassercloser = new THREE.Mesh(wasserplane, wassermaterial);
-    this.room.add(this.wasser, this.wassercloser);
-    this.wasser.castShadow = true;
-    this.wassercloser.castShadow = true;
-    this.wasser.name = "Wasser";
-    this.wassercloser.name = "Wasser_Abschluss"
+    this.water =  new THREE.Mesh(watergeo, watermaterial);
+    this.watersurf = new THREE.Mesh(waterplane, watermaterial);
+    this.room.add(this.water, this.watersurf);
+    this.water.castShadow = true;
+    this.watersurf.castShadow = true;
+    this.water.name = "water";
+    this.watersurf.name = "watersurf"
+
+    this.alarm = new THREE.Mesh(alarmgeo, alarmmaterial);
+    this.room.add(this.alarm);
+    this.alarm.name="thealarm";
 
     //Highlight für Würfel
     this.highlight = new THREE.Mesh(
@@ -189,9 +205,10 @@ class App {
     this.cube4.position.set(-1.75, 1, 1);
     this.viscobutton3.position.set(-1.75, 1, 0);
     this.tank.position.set(2.5,0,-2.1);
-    this.wasser.position.set(2.5,0,-2.1);
-    this.wassercloser.position.set(2.5,0,-2.1);
-    this.wassercloser.rotateY(Math.PI / 180 * 90)
+    this.water.position.set(2.5,-2,-2.1);
+    this.watersurf.position.set(2.5,-2,-2.1);
+    this.watersurf.rotateY(Math.PI / 180 * 90)
+    this.alarm.position.set(2.8,2.31,-2.4);
 
     //HILFE
     const axesHelper = new THREE.AxesHelper(5);
@@ -232,17 +249,7 @@ class App {
   mylight() {
     // CREATE LIGHT
    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.target.position.set(0, 0, 0);
-    directionalLight.target.updateMatrixWorld();
-
-    directionalLight.castShadow = true;
-    directionalLight.position.set(0, 10, 0);
-
-    directionalLight.shadow.mapSize.width = 512; // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5; // default
-    directionalLight.shadow.camera.far = 500; // default
+    
 
     const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 0.8);
 
@@ -279,6 +286,8 @@ class App {
     const lamp6 = new THREE.PointLight(0x008888, 5, 8, 3); // Blau
     const lampbig6 = new THREE.PointLight(0xffffff, 0.5, 8, 7); //Weiß
 
+    const alarmlamp = new THREE.PointLight(0xff0000, 10,8,3);
+
     lamp.position.set(4.8, 1, -3.5);
     //lampbig.position.set(4.8, 1, -3.5);
 
@@ -297,6 +306,10 @@ class App {
     lamp6.position.set(-4.8, 1, 3.5);
    // lampbig6.position.set(-4.8, 1, 3.5);
 
+    alarmlamp.position.set(2.8,2.31,-2.4);
+    alarmlamp.name = "alarmlamp";
+
+
     const sphereSize1 = 0.4;
     const sphereSize2 = 1;
     const lampHelper = new THREE.PointLightHelper(lamp, sphereSize1);
@@ -305,6 +318,7 @@ class App {
     const lamp4Helper = new THREE.PointLightHelper(lamp4, sphereSize1);
     const lamp5Helper = new THREE.PointLightHelper(lamp5, sphereSize1);
     const lamp6Helper = new THREE.PointLightHelper(lamp6, sphereSize1);
+    const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
    /* const lampbigHelper = new THREE.PointLightHelper(lampbig, sphereSize2);
     const lampbig2Helper = new THREE.PointLightHelper(lampbig2, sphereSize2);
     const lampbig3Helper = new THREE.PointLightHelper(lampbig3, sphereSize2);
@@ -324,6 +338,7 @@ class App {
       lamp5Helper,
    //   lampbig5Helper,
       lamp6Helper,
+      alarmlamphelper
    //   lampbig6Helper
     );
     this.scene.add(
@@ -333,13 +348,15 @@ class App {
       lamp6,
       lamp4,
       lamp5,
+      alarmlamp
      /* lampbig5,
       lampbig6, lampbig4, lampbig,
       lampbig2,
       lampbig3,*/
     );
+    this.room.add(alarmlamp);
 
-    this.scene.add(hemilight, directionalLight );
+    this.scene.add(hemilight );
 
     const uplight = new THREE.SpotLight(0xffffff, 5, 2, 0.8, 0.5, 2);
     uplight.castShadow = true;
@@ -364,24 +381,10 @@ class App {
     this.scene.add(uplight.target, uplight2.target, uplight3.target);
     this.scene.add(uplight, uplight2, uplight3, light);
 
-    /*
-    const viscospot = new THREE.SpotLight(0xffffff, 15,8,0.6,0.5,2);
-    viscospot.castShadow = true;
-    viscospot.target.position.set(-3, 2, 0);
-    viscospot.target.updateMatrixWorld();
-    viscospot.position.set(0,0,0);
-
-    this.scene.add(viscospot.target)
-    this.scene.add(viscospot);
-
-**/
+    
 
     //HILFE
-    const dirLightHelper = new THREE.DirectionalLightHelper(
-      directionalLight,
-      5
-    );
-    this.scene.add(dirLightHelper);
+  
 
     const spotLightHelper = new THREE.SpotLightHelper(uplight);
     const spotLightHelper2 = new THREE.SpotLightHelper(uplight2);
@@ -730,10 +733,10 @@ class App {
 
   handleController(controller, myscene) {
     
-    
 
     if (controller.userData.selectPressed) {
-
+     /* console.log("ROOM")
+      console.log(this.room);*/
       // VR-Buttons
       controller.children[0].scale.z = 10;
       this.scene.add(this.highlight);
@@ -797,6 +800,12 @@ class App {
         const nptbody = myscene.getObjectByName("viscosity").getObjectByName("NPT-Körper");
         const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
 
+
+        const water = myscene.getObjectByName("water");
+        const watersurf = myscene.getObjectByName("watersurf");
+        const thealarm = this.room.getObjectByName("thealarm");
+        const alarmlamp = this.room.getObjectByName("alarmlamp");
+
         
 
         
@@ -822,7 +831,7 @@ class App {
         //Buttons werden gedrückt
         // Button für Füllstand explode
         if ( this.highlight.visible == true && intersects[0].object.name == "cube1"){
-          this.flanschtext.position.set = (-2.530477523803711,1.6553013324737549,2.978816032409668 );
+         
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -864,26 +873,42 @@ class App {
             //console.log('controller links');
           };
 
-          const explosive = () => {new TWEEN.Tween(kopf.position)
+          const explosive = () => {new TWEEN.Tween(water.position)
               .to(
                 {
-                  y: 2.5,
+                  y: 0
                 },
-                500
+                3000
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-            new TWEEN.Tween(sonde.position)
+            new TWEEN.Tween(watersurf.position)
               .to(
                 {
-                  y: 1.9,
+                  y: 0,
                 },
-                500
+                3000
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-          };
+
+              new TWEEN.Tween(thealarm.material)
+              .to(
+                {
+                  opacity: 0.9,
+                },
+                2000
+              ).easing(TWEEN.Easing.Cubic.Out)
+              .start();
+
+              new TWEEN.Tween(alarmlamp)
+            .to({
+              decay: 0,
+
+            }, 500).easing(TWEEN.Easing.Cubic.Out)
+            .start();
+                    };
 
           var animate = function () {
             requestAnimationFrame(animate);
@@ -937,22 +962,22 @@ class App {
                 shininess: 40
               });
           };
-          const shrink = () => { new TWEEN.Tween(kopf.position)
+          const shrink = () => { new TWEEN.Tween(water.position)
               .to(
                 {
-                  y: 2.1661229133605957,
+                  y: -2,
                 },
-                500
+                3000
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-            new TWEEN.Tween(sonde.position)
+            new TWEEN.Tween(watersurf.position)
               .to(
                 {
-                  y: 2.1661229133605957,
+                  y: -2,
                 },
-                500
+                3000
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
