@@ -205,8 +205,8 @@ class App {
     this.cube4.position.set(-1.75, 1, 1);
     this.viscobutton3.position.set(-1.75, 1, 0);
     this.tank.position.set(2.5,0,-2.1);
-    this.water.position.set(2.5,-2,-2.1);
-    this.watersurf.position.set(2.5,-2,-2.1);
+    this.water.position.set(2.5,-1,-2.1);
+    this.watersurf.position.set(2.5,-1,-2.1);
     this.watersurf.rotateY(Math.PI / 180 * 90)
     this.alarm.position.set(2.8,2.31,-2.4);
 
@@ -880,8 +880,31 @@ class App {
                 },
                 3000
               )
+
               .easing(TWEEN.Easing.Cubic.Out)
+              .start()
+              .onComplete(function(){
+
+                new TWEEN.Tween(thealarm.material)
+                
+                .to({
+                    opacity: 0.9,
+                    
+                  },
+                  500)
+                  
+                
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
+            
+                new TWEEN.Tween(alarmlamp)
+              .to({
+                decay: 0,
+                            
+              }, 500).easing(TWEEN.Easing.Cubic.Out)
+              
               .start();
+              })
 
             new TWEEN.Tween(watersurf.position)
               .to(
@@ -893,22 +916,12 @@ class App {
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-              new TWEEN.Tween(thealarm.material)
-              .to(
-                {
-                  opacity: 0.9,
-                },
-                2000
-              ).easing(TWEEN.Easing.Cubic.Out)
-              .start();
 
-              new TWEEN.Tween(alarmlamp)
-            .to({
-              decay: 0,
+             
 
-            }, 500).easing(TWEEN.Easing.Cubic.Out)
-            .start();
-                    };
+              }
+
+                 
 
           var animate = function () {
             requestAnimationFrame(animate);
@@ -920,6 +933,7 @@ class App {
           animate();
           downcubeleft();
           explosive();
+     
 
           // intersects[0].object.position.setY(-0.2);
         }
@@ -962,26 +976,53 @@ class App {
                 shininess: 40
               });
           };
-          const shrink = () => { new TWEEN.Tween(water.position)
+          const shrink = () => { new TWEEN.Tween(water.position) 
               .to(
                 {
-                  y: -2,
+                  y: -1,
+                },
+                3000
+              )
+              
+
+              .easing(TWEEN.Easing.Cubic.Out)
+              
+              .start()
+              .onComplete(function(){
+                new TWEEN.Tween(thealarm.material)
+                
+                .to(
+                  {
+                    opacity: 0.2,
+                  },
+                  500
+                ).easing(TWEEN.Easing.Cubic.Out)
+                .start();
+            
+                new TWEEN.Tween(alarmlamp)
+              .to({
+                decay: 5,
+            
+              }, 500).easing(TWEEN.Easing.Cubic.Out)
+              .start();
+              })
+              
+
+            new TWEEN.Tween(watersurf.position)
+              .to(
+                {
+                  y: -1,
                 },
                 3000
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-            new TWEEN.Tween(watersurf.position)
-              .to(
-                {
-                  y: -2,
-                },
-                3000
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
+              
           };
+
+          
+          
 
           var animate = function () { requestAnimationFrame(animate);
             TWEEN.update();
@@ -991,6 +1032,7 @@ class App {
           animate();
           downcuberight();
           shrink();
+          
 
           //intersects[0].object.position.setY(-0.2);
 
