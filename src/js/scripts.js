@@ -771,10 +771,7 @@ class App {
               console.log(this.room.children);
             */
       //  console.log(myscene);
-        const kabel = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-kabel-kabel");
-       const kopf = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Kopf");
-        const extention = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Verlängerung");
-       const sonde = myscene.getObjectByName("Kabelsonde").getObjectByName("KF25-Sonde");
+       
 
         
         const zylinderLinksText = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_text");
@@ -807,7 +804,7 @@ class App {
         const alarmlamp = this.room.getObjectByName("alarmlamp");
 
         
-
+        
         
        
         zylinderLinksText.visible = false;
@@ -845,14 +842,14 @@ class App {
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-              intersects[0].object.material = new THREE.MeshPhongMaterial({
+             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color("rgb(10, 63, 71)"),
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 10,
                 shading: THREE.FlatShading,
                 transparent: 1,
                 opacity: 1,
-              });
+              }); */
             new TWEEN.Tween(this.cube2.position)
               .to(
                 {
@@ -952,14 +949,14 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-              intersects[0].object.material = new THREE.MeshPhongMaterial({
+             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color("rgb(10, 63, 71)"),
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 10,
                 shading: THREE.FlatShading,
                 transparent: 1,
                 opacity: 1,
-              });
+              });*/
 
             new TWEEN.Tween(this.cube.position)
               .to(
@@ -1053,14 +1050,14 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-              intersects[0].object.material = new THREE.MeshPhongMaterial({
+             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color("rgb(10, 63, 71)"),
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 10,
                 shading: THREE.FlatShading,
                 transparent: 1,
                 opacity: 1,
-              });
+              });*/
 
             new TWEEN.Tween(this.cube4.position)
               .to(
@@ -1213,14 +1210,14 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-              intersects[0].object.material = new THREE.MeshPhongMaterial({
+             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color("rgb(10, 63, 71)"),
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 10,
                 shading: THREE.FlatShading,
                 transparent: 1,
                 opacity: 1,
-              });
+              });*/
             new TWEEN.Tween(this.cube3.position)
               .to(
                 {
@@ -1503,14 +1500,14 @@ class App {
                 )
                 .easing(TWEEN.Easing.Cubic.Out)
                 .start();
-                intersects[0].object.material = new THREE.MeshPhongMaterial({
+                /*intersects[0].object.material = new THREE.MeshPhongMaterial({
                   color: new THREE.Color("rgb(10, 63, 71)"),
                   specular: new THREE.Color("rgb(255, 255, 255)"),
                   shininess: 10,
                   shading: THREE.FlatShading,
                   transparent: 1,
                   opacity: 1,
-                });
+                });*/
                 zylinderLinksText.visible = true;
                 kugelText.visible = true;
                 
