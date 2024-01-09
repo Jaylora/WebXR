@@ -25,7 +25,7 @@ class App {
   cube2;
   cube3;
   cube4;
-  viscobutton3;
+
   orbitControls;
   controllers;
   raycaster;
@@ -170,13 +170,10 @@ class App {
     this.cube4.castShadow = true;
     this.cube4.name = "cube4";
 
-    this.viscobutton3 = new THREE.Mesh(boxgeometry, cubematerial);
-    this.room.add(this.viscobutton3);
-    this.viscobutton3.castShadow = true;
-    this.viscobutton3.name = "viscobutton3";
+    
 
     this.tank =  new THREE.Mesh(tankgeometry, tankmaterial);
-    this.room.add(this.tank);
+    this.scene.add(this.tank);
     this.tank.castShadow = true;
     this.tank.name = "MainTank";
 
@@ -193,17 +190,17 @@ class App {
     this.alarm.name="thealarm";
 
     //Highlight für Würfel
-    this.highlight = new THREE.Mesh(
+   /* this.highlight = new THREE.Mesh(
       boxgeometry,
       new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide, transparent: true, opacity: 0.5 })
     );
-    this.highlight.scale.set(1.1, 1.1, 1.1);
+    this.highlight.scale.set(1.1, 1.1, 1.1);*/
 
     this.cube.position.set(1.75, 1, -2);
     this.cube2.position.set(1.75, 1, -1.5);
     this.cube3.position.set(-1.75, 1, 0.5);
     this.cube4.position.set(-1.75, 1, 1);
-    this.viscobutton3.position.set(-1.75, 1, 0);
+   
     this.tank.position.set(2.5,0,-2.1);
     this.water.position.set(2.5,-1,-2.1);
     this.watersurf.position.set(2.5,-1,-2.1);
@@ -230,13 +227,13 @@ class App {
       const buttonstand2 = new THREE.Mesh(standgeo, standmat);
       const buttonstand3 = new THREE.Mesh(standgeo, standmat);
       const buttonstand4 = new THREE.Mesh(standgeo, standmat);
-      const buttonstand5 = new THREE.Mesh(standgeo, standmat);
-      this.scene.add(buttonstand, buttonstand2, buttonstand3, buttonstand4, buttonstand5);
+      
+      this.scene.add(buttonstand, buttonstand2, buttonstand3, buttonstand4);
       buttonstand.position.set(1.75, 0.2, -2);
       buttonstand2.position.set(1.75, 0.2, -1.5);
       buttonstand3.position.set(-1.75, 0.2, 0.5);
       buttonstand4.position.set(-1.75, 0.2, 1);
-      buttonstand5.position.set(-1.75, 0.2, 0);
+     
       
 
 
@@ -672,7 +669,7 @@ class App {
     function onSelectEnd() {
       this.children[0].scale.z = 0;
       //BAUSTELLE
-      self.highlight.visible = false;
+      /*self.highlight.visible = false;*/
       /*
       self.highlight2.visible = false;
      
@@ -739,7 +736,7 @@ class App {
       console.log(this.room);*/
       // VR-Buttons
       controller.children[0].scale.z = 10;
-      this.scene.add(this.highlight);
+     /* this.scene.add(this.highlight);*/
       /* this.scene.add(this.highlight2); */
       this.workingMatrix.identity().extractRotation(controller.matrixWorld);
 
@@ -820,14 +817,21 @@ class App {
         flanschtext.visible = false;
        
         
-        intersects[0].object.add(this.highlight);
-        this.highlight.visible = true;
+       // intersects[0].object.add(this.highlight);
+       // this.highlight.visible = true;
 
          console.log(intersects[0]);
         controller.children[0].scale.z = intersects[0].distance;
         //Buttons werden gedrückt
         // Button für Füllstand explode
-        if ( this.highlight.visible == true && intersects[0].object.name == "cube1"){
+        if ( /*this.highlight.visible == true && */intersects[0].object.name == "cube1"){
+
+         /* if(intersects[0].object == water){
+            this.highlight.visible == false;
+          }
+          if(intersects[0].object == watersurf){
+            this.highlight.visible == false;
+          }*/
          
           const stats = Stats();
           document.body.appendChild(stats.dom);
@@ -842,14 +846,7 @@ class App {
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(10, 63, 71)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 10,
-                shading: THREE.FlatShading,
-                transparent: 1,
-                opacity: 1,
-              }); */
+             
             new TWEEN.Tween(this.cube2.position)
               .to(
                 {
@@ -870,7 +867,8 @@ class App {
             //console.log('controller links');
           };
 
-          const explosive = () => {new TWEEN.Tween(water.position)
+          const explosive = () => {
+            new TWEEN.Tween(water.position)
               .to(
                 {
                   y: 0
@@ -912,10 +910,6 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-
-
-             
-
               }
 
                  
@@ -936,7 +930,7 @@ class App {
         }
 
         // Button 2 für Füllstand shrink
-        if ( this.highlight.visible == true && intersects[0].object.name == "cube2") {
+        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube2") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -949,14 +943,7 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(10, 63, 71)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 10,
-                shading: THREE.FlatShading,
-                transparent: 1,
-                opacity: 1,
-              });*/
+
 
             new TWEEN.Tween(this.cube.position)
               .to(
@@ -1036,7 +1023,7 @@ class App {
           // this.cube.position.setY(0);
         }
         // Button für Viscosität explode
-        if ( this.highlight.visible == true && intersects[0].object.name == "cube3") {
+        if ( /*this.highlight.visible == true &&*/ intersects[0].object.name == "cube3") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -1050,14 +1037,7 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(10, 63, 71)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 10,
-                shading: THREE.FlatShading,
-                transparent: 1,
-                opacity: 1,
-              });*/
+             
 
             new TWEEN.Tween(this.cube4.position)
               .to(
@@ -1074,21 +1054,7 @@ class App {
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 40
               });
-              new TWEEN.Tween(this.viscobutton3.position)
-              .to(
-                {
-                  y: 1,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-
-              this.viscobutton3.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
+             
           };
 
 
@@ -1196,7 +1162,7 @@ class App {
         }
       
         // Button für Viscosität shrink
-        if ( this.highlight.visible == true && intersects[0].object.name == "cube4") {
+        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube4") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -1210,14 +1176,7 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-             /* intersects[0].object.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(10, 63, 71)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 10,
-                shading: THREE.FlatShading,
-                transparent: 1,
-                opacity: 1,
-              });*/
+             
             new TWEEN.Tween(this.cube3.position)
               .to(
                 {
@@ -1232,22 +1191,7 @@ class App {
                 specular: new THREE.Color("rgb(255, 255, 255)"),
                 shininess: 40
               });
-              new TWEEN.Tween(this.viscobutton3.position)
-              .to(
-                {
-                  y: 1,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-
               
-              this.viscobutton3.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
           };
           
 
@@ -1485,73 +1429,15 @@ class App {
         }
         
         // Button für Informationen Visco
-        if( this.highlight.visible == true && intersects[0].object.name == "viscobutton3"){
-            const stats = Stats();
-            document.body.appendChild(stats.dom);
-            console.log("Der BUTTON IST GEDRÜCKT!");
 
-            const showinfobutton = () => {
-              new TWEEN.Tween(intersects[0].object.position)
-                .to(
-                  {
-                    y: 0.9,
-                  },
-                  500
-                )
-                .easing(TWEEN.Easing.Cubic.Out)
-                .start();
-                /*intersects[0].object.material = new THREE.MeshPhongMaterial({
-                  color: new THREE.Color("rgb(10, 63, 71)"),
-                  specular: new THREE.Color("rgb(255, 255, 255)"),
-                  shininess: 10,
-                  shading: THREE.FlatShading,
-                  transparent: 1,
-                  opacity: 1,
-                });*/
-                zylinderLinksText.visible = true;
-                kugelText.visible = true;
-                
-                new TWEEN.Tween(zylinderLinksText.material && kugelText.material )
-                .to({
-                  opacity: 0.5
-                }, 500) 
-                .easing(TWEEN.Easing.Linear.None)
-                .start();
-
-                                                 
-                console.log(myscene.getObjectByName("viscosity"));
-        
-          };
-          var animate = function () {
-            requestAnimationFrame(animate);
-
-            TWEEN.update();
-            stats.update();
-          };
-          animate();
-          showinfobutton();
-        }
-          
-      } else {
-        this.highlight.visible = false;
-        /*if(this.highlight.visible == false && intersects[0].object.name =="cube1"){
-                 this.cube.position.setY(0);
-                // this.cube2.position.setY(0);
-               
-                }*/
-        //console.log('controller geht nicht')
-
-        /*   this.highlight2.visible = false;
-                console.log('highlight 2 geht nicht')*/
-      }
-    }
+      }}}
 
     // TELEPORT
  /*   if ( INTERSECTION ) marker.position.copy( INTERSECTION );
 
 				marker.visible = INTERSECTION !== undefined;
         */
-  } 
+  
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
