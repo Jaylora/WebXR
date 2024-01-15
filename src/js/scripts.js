@@ -930,37 +930,13 @@ class App {
         }
 
         // Button 2 für Füllstand shrink
-        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube2") {
+
+        if(water.position.y == 0){
+          console.log("TRIGGER GEHT")
           const stats = Stats();
           document.body.appendChild(stats.dom);
-
-          const downcuberight = () => { new TWEEN.Tween(intersects[0].object.position)
-              .to(
-                {
-                  y: 0.9,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-
-
-            new TWEEN.Tween(this.cube.position)
-              .to(
-                {
-                  y: 1,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-              this.cube.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
-          };
-          const shrink = () => { new TWEEN.Tween(water.position) 
+          const shrink = () => { 
+            new TWEEN.Tween(water.position) 
               .to(
                 {
                   y: -1,
@@ -1004,6 +980,48 @@ class App {
 
               
           };
+          
+          var animate = function () { requestAnimationFrame(animate);
+            TWEEN.update();
+            stats.update();
+          };
+
+          animate();
+          shrink();
+         }
+         
+
+        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube2") {
+          const stats = Stats();
+          document.body.appendChild(stats.dom);
+
+          const downcuberight = () => { new TWEEN.Tween(intersects[0].object.position)
+              .to(
+                {
+                  y: 0.9,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Cubic.Out)
+              .start();
+
+
+            new TWEEN.Tween(this.cube.position)
+              .to(
+                {
+                  y: 1,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Cubic.Out)
+              .start();
+              this.cube.material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color("rgb(0, 174, 255)"),
+                specular: new THREE.Color("rgb(255, 255, 255)"),
+                shininess: 40
+              });
+          };
+         
 
           
           
@@ -1015,7 +1033,7 @@ class App {
 
           animate();
           downcuberight();
-          shrink();
+
           
 
           //intersects[0].object.position.setY(-0.2);
