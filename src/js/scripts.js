@@ -248,146 +248,48 @@ class App {
    
     
 
-    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 0.8);
+    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820,1);
 
-    const lamp = new THREE.PointLight(0x008888, 5, 8, 3); // Blau
-    const lampbig = new THREE.PointLight(0xffffff, 0.5, 8, 7); // Weiß
-    const lamp2 = new THREE.PointLight(0x008888, 5, 8, 3); // Gelb
-    const lampbig2 = new THREE.PointLight(0xffffff, 0.5, 8, 7); //Weiß
 
-    /*
-      [0  0]
-      [0  0]
-      [0  X]
-    */
-    const lamp3 = new THREE.PointLight(0x008888, 10, 8, 3); //Blau
-    const lampbig3 = new THREE.PointLight(0xffffff, 0.5, 8, 7); // Weiß
 
-    /*
-      [X  0]
-      [0  0]
-      [0  0]
-    */
-    const lamp4 = new THREE.PointLight(0x008888, 5, 8, 3); // Blau
-    const lampbig4 = new THREE.PointLight(0xffffff, 0.5, 8, 7); // Weiß
+    const alarmlamp = new THREE.PointLight(0xff0000, 0,8,3);
 
-    /*
-      [0  0]
-      [X  0]
-      [0  0]
-    */
 
-    const lamp5 = new THREE.PointLight(0x008888, 5, 8, 3); //Gelb
-    const lampbig5 = new THREE.PointLight(0xffffff, 0.5, 8, 7); // Weiß
-
-    const lamp6 = new THREE.PointLight(0x008888, 5, 8, 3); // Blau
-    const lampbig6 = new THREE.PointLight(0xffffff, 0.5, 8, 7); //Weiß
-
-    const alarmlamp = new THREE.PointLight(0xff0000, 10,8,3);
-
-    lamp.position.set(4.8, 1, -3.5);
-    //lampbig.position.set(4.8, 1, -3.5);
-
-    lamp2.position.set(4.8, 1, 0);
-   // lampbig2.position.set(4.8, 1, 0);
-
-    lamp3.position.set(4.8, 1, 3.5);
-   // lampbig3.position.set(4.8, 1, 3.5);
-
-    lamp4.position.set(-4.8, 1, -3.5);
-   // lampbig4.position.set(-4.8, 1, -3.5);
-
-    lamp5.position.set(-4.8, 1, 0);
-   // lampbig5.position.set(-4.8, 1, 0);
-
-    lamp6.position.set(-4.8, 1, 3.5);
-   // lampbig6.position.set(-4.8, 1, 3.5);
 
     alarmlamp.position.set(2.8,2.31,-2.4);
     alarmlamp.name = "alarmlamp";
 
 
     const sphereSize1 = 0.4;
-    const sphereSize2 = 1;
-    const lampHelper = new THREE.PointLightHelper(lamp, sphereSize1);
-    const lamp2Helper = new THREE.PointLightHelper(lamp2, sphereSize1);
-    const lamp3helper = new THREE.PointLightHelper(lamp3, sphereSize1);
-    const lamp4Helper = new THREE.PointLightHelper(lamp4, sphereSize1);
-    const lamp5Helper = new THREE.PointLightHelper(lamp5, sphereSize1);
-    const lamp6Helper = new THREE.PointLightHelper(lamp6, sphereSize1);
+
     const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
-   /* const lampbigHelper = new THREE.PointLightHelper(lampbig, sphereSize2);
-    const lampbig2Helper = new THREE.PointLightHelper(lampbig2, sphereSize2);
-    const lampbig3Helper = new THREE.PointLightHelper(lampbig3, sphereSize2);
-    const lampbig4Helper = new THREE.PointLightHelper(lampbig4, sphereSize2);
-    const lampbig5Helper = new THREE.PointLightHelper(lampbig5, sphereSize2);
-    const lampbig6Helper = new THREE.PointLightHelper(lampbig6, sphereSize2);*/
+
 
     this.scene.add(
-      lampHelper,
-      lamp2Helper,
-    //  lampbigHelper,
-    //  lampbig2Helper,
-      lamp3helper,
-    //  lampbig3Helper,
-      lamp4Helper,
-   //   lampbig4Helper,
-      lamp5Helper,
-   //   lampbig5Helper,
-      lamp6Helper,
+ 
       alarmlamphelper
-   //   lampbig6Helper
+
     );
     this.scene.add(
-      lamp,
-      lamp2,
-      lamp3,
-      lamp6,
-      lamp4,
-      lamp5,
+   
       alarmlamp
-     /* lampbig5,
-      lampbig6, lampbig4, lampbig,
-      lampbig2,
-      lampbig3,*/
+     
     );
     this.room.add(alarmlamp);
 
     this.scene.add(hemilight );
 
-    const uplight = new THREE.SpotLight(0xffffff, 5, 2, 0.8, 0.5, 2);
-    uplight.castShadow = true;
-    uplight.target.position.set(4.5, 1, 0);
-    uplight.target.updateMatrixWorld();
-    uplight.position.set(3, 0.2, 0);
-
-    const uplight2 = new THREE.SpotLight(0xffffff, 5, 2, 0.8, 0.5, 2);
-    uplight2.castShadow = true;
-    uplight2.target.position.set(4.5, 1, 3.5);
-    uplight2.target.updateMatrixWorld();
-    uplight2.position.set(3, 0.2, 3.5);
-
-    const uplight3 = new THREE.SpotLight(0xffffff, 5, 2, 0.8, 0.5, 2);
-    uplight3.castShadow = true;
-    uplight3.target.position.set(4.5, 1, -3.5);
-    uplight3.target.updateMatrixWorld();
-    uplight3.position.set(3, 0.2, -3.5);
+    
 
     const light = new THREE.AmbientLight(0x404040); // soft white light
 
-    this.scene.add(uplight.target, uplight2.target, uplight3.target);
-    this.scene.add(uplight, uplight2, uplight3, light);
-
+   
     
 
     //HILFE
   
 
-    const spotLightHelper = new THREE.SpotLightHelper(uplight);
-    const spotLightHelper2 = new THREE.SpotLightHelper(uplight2);
-    const spotLightHelper3 = new THREE.SpotLightHelper(uplight3);
-
-    this.scene.add(spotLightHelper, spotLightHelper2, spotLightHelper3);
+   
   }
   mytextures() {
     //Lampenschirm
@@ -895,6 +797,7 @@ class App {
                 new TWEEN.Tween(alarmlamp)
               .to({
                 decay: 0,
+                intensity: 10,
                             
               }, 500).easing(TWEEN.Easing.Cubic.Out)
               
@@ -962,6 +865,7 @@ class App {
                 new TWEEN.Tween(alarmlamp)
               .to({
                 decay: 5,
+                intensity: 0,
             
               }, 500).easing(TWEEN.Easing.Cubic.Out)
               .start();
