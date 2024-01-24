@@ -13,8 +13,8 @@ import {
   fetchProfile,
   MotionController,
 } from "../../node_modules/three/examples/jsm/libs/motion-controllers.module.js";
-import * as TWEEN from "/../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import TWEEN from 'https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.5.0/dist/tween.esm.js';
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
 class App {
   camera;
@@ -22,7 +22,7 @@ class App {
   renderer;
   container;
   cube;
-  cube2;
+  // cube2;
   cube3;
   cube4;
 
@@ -37,7 +37,6 @@ class App {
   INTERSECTION;
   water;
   alarm;
-
 
   constructor() {
     this.container = document.createElement("div");
@@ -85,11 +84,10 @@ class App {
 
     this.initScene();
     this.loadMyFiles();
-    
-    
+
     this.mylight();
     this.mytextures();
-    
+
     this.setupXR();
 
     window.addEventListener("resize", this.onWindowResize);
@@ -105,60 +103,65 @@ class App {
     this.scene.add(this.room);
 
     //CREATE CUBE TO INTERACT
-    const boxgeometry = new THREE.CylinderGeometry(0.2,0.2,0.2,24,3);
-    const tankgeometry = new THREE.CylinderGeometry(1,1,4.1,10,4,false,0,3);
-    const watergeo = new THREE.CylinderGeometry(0.9,0.9,2,10,4,false,0,3.15);
-    const waterplane = new THREE.PlaneGeometry(1.8,2,1,2);
+    const boxgeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.2, 24, 3);
+    const tankgeometry = new THREE.CylinderGeometry(
+      1,
+      1,
+      4.1,
+      10,
+      4,
+      false,
+      0,
+      3
+    );
+    const watergeo = new THREE.CylinderGeometry(
+      0.9,
+      0.9,
+      2,
+      10,
+      4,
+      false,
+      0,
+      3.15
+    );
+    const waterplane = new THREE.PlaneGeometry(1.8, 2, 1, 2);
 
-    const alarmgeo = new THREE.CylinderGeometry(0.2,0.2,0.5,8,1);
+    const alarmgeo = new THREE.CylinderGeometry(0.2, 0.2, 0.5, 8, 1);
 
-  
-     
-      
-    
     // CREATE CUBE TO INTERACT MATERIAL
     const cubematerial = new THREE.MeshPhongMaterial({
       color: new THREE.Color("rgb(0, 174, 255)"),
       specular: new THREE.Color("rgb(255, 255, 255)"),
-      shininess: 40
+      shininess: 40,
     });
 
     const tankmaterial = new THREE.MeshLambertMaterial({
-      color: new THREE.Color("rgb(140,140,140,)"),
-      side: THREE.DoubleSide
-      
-    })
+      color: new THREE.Color("rgb(140,140,140)"),
+      side: THREE.DoubleSide,
+    });
 
     const watermaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("rgb(3, 165, 252)"),
-      transparent: true,
-      opacity: 0.5,
-      side: THREE.DoubleSide
-    })
+      color: 0x004080,
+      side: THREE.DoubleSide,
+    });
 
     const alarmmaterial = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
-      transparent: true,
-      opacity: 0.2,
-      side: THREE.DoubleSide,
-      emmissive: 0xff0000
-      
-    })
+      color: 0xffcccc,
+      emmissive: 0xff0000,
+    });
 
     //Würfel erstellen und zum Raumm hinzufügen
     //COMBINE CUBE TO INTERACT WITH MATERIAL
 
-    
     this.cube = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube);
     this.cube.castShadow = true;
     this.cube.name = "cube1";
-   
 
-    this.cube2 = new THREE.Mesh(boxgeometry, cubematerial);
-    this.room.add(this.cube2);
-    this.cube2.castShadow = true;
-    this.cube2.name = "cube2";
+    // this.cube2 = new THREE.Mesh(boxgeometry, cubematerial);
+    // this.room.add(this.cube2);
+    // this.cube2.castShadow = true;
+    // this.cube2.name = "cube2";
 
     this.cube3 = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube3);
@@ -170,126 +173,92 @@ class App {
     this.cube4.castShadow = true;
     this.cube4.name = "cube4";
 
-    
-
-    this.tank =  new THREE.Mesh(tankgeometry, tankmaterial);
+    this.tank = new THREE.Mesh(tankgeometry, tankmaterial);
     this.scene.add(this.tank);
     this.tank.castShadow = true;
     this.tank.name = "MainTank";
 
-    this.water =  new THREE.Mesh(watergeo, watermaterial);
+    this.water = new THREE.Mesh(watergeo, watermaterial);
     this.watersurf = new THREE.Mesh(waterplane, watermaterial);
     this.room.add(this.water, this.watersurf);
     this.water.castShadow = true;
     this.watersurf.castShadow = true;
     this.water.name = "water";
-    this.watersurf.name = "watersurf"
+    this.watersurf.name = "watersurf";
 
     this.alarm = new THREE.Mesh(alarmgeo, alarmmaterial);
     this.room.add(this.alarm);
-    this.alarm.name="thealarm";
+    this.alarm.name = "thealarm";
 
     //Highlight für Würfel
-   /* this.highlight = new THREE.Mesh(
+    /* this.highlight = new THREE.Mesh(
       boxgeometry,
       new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide, transparent: true, opacity: 0.5 })
     );
     this.highlight.scale.set(1.1, 1.1, 1.1);*/
 
-    this.cube.position.set(1.75, 1, -2);
-    this.cube2.position.set(1.75, 1, -1.5);
-    this.cube3.position.set(-1.75, 1, 0.5);
-    this.cube4.position.set(-1.75, 1, 1);
-   
-    this.tank.position.set(2.5,0,-2.1);
-    this.water.position.set(2.5,-1,-2.1);
-    this.watersurf.position.set(2.5,-1,-2.1);
-    this.watersurf.rotateY(Math.PI / 180 * 90)
-    this.alarm.position.set(2.8,2.31,-2.4);
+    this.cube.position.set(1.75, 0.7, -0.9);
+    // this.cube2.position.set(1.75, 0.7, -0.4);
+    this.cube3.position.set(-1.75, 0.7, 0.5);
+    this.cube4.position.set(-1.75, 0.7, 1);
+
+    this.tank.position.set(2.5, 0, -2.1);
+    this.water.position.set(2.5, -1, -2.1);
+    this.watersurf.position.set(2.5, -1, -2.1);
+    this.watersurf.rotateY((Math.PI / 180) * 90);
+    this.alarm.position.set(2.8, 2.31, -2.4);
 
     //HILFE
     const axesHelper = new THREE.AxesHelper(5);
     this.scene.add(axesHelper);
 
-   
-
-
-
     //Vitrinen
-      //const vitrinegeo = new THREE.BoxGeometry (1, 0.3, 3);
-      const standmat = new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0xffffff, specular: 0xffff50, shininess: 40, transparent: true, opacity:0.4
-      });
+    //const vitrinegeo = new THREE.BoxGeometry (1, 0.3, 3);
+    const standmat = new THREE.MeshPhongMaterial({
+      color: 0xb8cce0,
+      emmissive: 0x9eccfa,
+      specular: 0xffff50,
+      shininess: 40,
+    });
 
-      //Buttonstand
-      const standgeo = new THREE.CylinderGeometry(0.25,0.1,1.5,24,6);
-      
-      const buttonstand = new THREE.Mesh(standgeo, standmat);
-      const buttonstand2 = new THREE.Mesh(standgeo, standmat);
-      const buttonstand3 = new THREE.Mesh(standgeo, standmat);
-      const buttonstand4 = new THREE.Mesh(standgeo, standmat);
-      
-      this.scene.add(buttonstand, buttonstand2, buttonstand3, buttonstand4);
-      buttonstand.position.set(1.75, 0.2, -2);
-      buttonstand2.position.set(1.75, 0.2, -1.5);
-      buttonstand3.position.set(-1.75, 0.2, 0.5);
-      buttonstand4.position.set(-1.75, 0.2, 1);
-     
-      
+    //Buttonstand
+    const standgeo = new THREE.CylinderGeometry(0.25, 0.1, 0.8, 24, 6);
 
+    const buttonstand = new THREE.Mesh(standgeo, standmat);
+    // const buttonstand2 = new THREE.Mesh(standgeo, standmat);
+    const buttonstand3 = new THREE.Mesh(standgeo, standmat);
+    const buttonstand4 = new THREE.Mesh(standgeo, standmat);
 
-
-
-     
-
+    this.scene.add(buttonstand, buttonstand3, buttonstand4);
+    buttonstand.position.set(1.75, 0.2, -0.9);
+    // buttonstand2.position.set(1.75, 0.2, -0.4);
+    buttonstand3.position.set(-1.75, 0.2, 0.5);
+    buttonstand4.position.set(-1.75, 0.2, 1);
   }
 
   mylight() {
     // CREATE LIGHT
-   
-    
 
-    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820,1);
+    const hemilight = new THREE.HemisphereLight(0xffffff, 0x080820, 1);
 
+    const alarmlamp = new THREE.PointLight(0xff0000, 0, 8, 3);
 
-
-    const alarmlamp = new THREE.PointLight(0xff0000, 0,8,3);
-
-
-
-    alarmlamp.position.set(2.8,2.31,-2.4);
+    alarmlamp.position.set(2.8, 2.31, -2.4);
     alarmlamp.name = "alarmlamp";
-
 
     const sphereSize1 = 0.4;
 
     const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
 
-
-    this.scene.add(
- 
-      alarmlamphelper
-
-    );
-    this.scene.add(
-   
-      alarmlamp
-     
-    );
+    this.scene.add(alarmlamphelper);
+    this.scene.add(alarmlamp);
     this.room.add(alarmlamp);
 
-    this.scene.add(hemilight );
-
-    
+    this.scene.add(hemilight);
 
     const light = new THREE.AmbientLight(0x404040); // soft white light
 
-   
-    
-
     //HILFE
-  
-
-   
   }
   mytextures() {
     //Lampenschirm
@@ -493,10 +462,9 @@ class App {
   }
 
   loadMyFiles() {
-    var myModels = ["lampe.glb", "kabel-sonde.glb", "viscosity.glb"];
+    var myModels = ["kabel-sonde.glb", "viscosity.glb"];
     let me = this;
 
-        
     new RGBELoader()
       .setPath("./textures/hdr/")
       .load("industrial_sunset_puresky_2k.hdr", function (texture) {
@@ -513,7 +481,7 @@ class App {
       var dateipfad = meinpfad + myModels[i];
 
       myGLTFloader.load(
-        dateipfad, 
+        dateipfad,
 
         function (gltf) {
           //me.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -532,36 +500,23 @@ class App {
           console.log("SAY THE NAME");
 
           me.room.add(gltf.scene);
-          
         },
         function (xhr) {
           console.log(((xhr.loaded / xhr.total) * 100).toFixed() + "% loaded");
-
-          
         },
         function (error) {
           console.log("An error happened");
         }
-
-       
       );
-      
     }
-    
   }
-
- 
 
   setupXR() {
     this.renderer.xr.enabled = true;
     document.body.appendChild(VRButton.createButton(this.renderer));
 
-    
     this.controllers = this.buildControllers();
     const self = this;
-
-    
-
 
     function onSelectStart() {
       this.children[0].scale.z = 10;
@@ -579,7 +534,7 @@ class App {
       this.userData.selectPressed = false;
 
       // TELEPORT
-     /* if ( INTERSECTION ) {
+      /* if ( INTERSECTION ) {
 
         const offsetPosition = { x: - INTERSECTION.x, y: - INTERSECTION.y, z: - INTERSECTION.z, w: 1 };
         const offsetRotation = new THREE.Quaternion();
@@ -589,9 +544,6 @@ class App {
         renderer.xr.setReferenceSpace( teleportSpaceOffset );
 
       } */
-
-
-
     }
 
     this.controllers.forEach((controller) => {
@@ -631,14 +583,12 @@ class App {
   }
 
   handleController(controller, myscene) {
-    
-
     if (controller.userData.selectPressed) {
-     /* console.log("ROOM")
+      /* console.log("ROOM")
       console.log(this.room);*/
       // VR-Buttons
       controller.children[0].scale.z = 10;
-     /* this.scene.add(this.highlight);*/
+      /* this.scene.add(this.highlight);*/
       /* this.scene.add(this.highlight2); */
       this.workingMatrix.identity().extractRotation(controller.matrixWorld);
 
@@ -651,7 +601,7 @@ class App {
       const intersects = this.raycaster.intersectObjects(this.room.children); //cube2
 
       // TELEPORT
-     /* const teleport = raycaster.intersectObjects( [ plane ] );
+      /* const teleport = raycaster.intersectObjects( [ plane ] );
 
 					if ( intersects.length > 0 ) {
 
@@ -661,6 +611,64 @@ class App {
 
       // console.log(this.room.children[0]);
       // console.log(intersects);
+      const zylinderLinksText = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Zylinder_links_text");
+
+    const kugelText = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Kugel_text");
+    const variventtext = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Varivent-text");
+    const npttext = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("NPT-text");
+    const flanschtext = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Prozessverbindung_text");
+
+    const flanschzylinder = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Flansch-Zylinder");
+    const flanschanschluss = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Flansch-Anschluss");
+    const flansch = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Flansch");
+    const flanschbody = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Flansch-Körper");
+
+    const flanschkugel = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Flansch-Kugel");
+    const standard = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Standard");
+    const standardanschluss = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Anschluss_Standard");
+    const standardbody = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("Standard_Körper");
+
+    const nptanschluss = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("NPT-Anschluss");
+    const nptzylinder = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("NPT-Zylinder");
+    const nptbody = myscene
+      .getObjectByName("viscosity")
+      .getObjectByName("NPT-Körper");
+    const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
+
+    const water = myscene.getObjectByName("water");
+    const watersurf = myscene.getObjectByName("watersurf");
+    const thealarm = this.room.getObjectByName("thealarm");
+    const alarmlamp = this.room.getObjectByName("alarmlamp");
 
       if (intersects.length > 0) {
         /*  console.log("DIE SZENE");
@@ -669,153 +677,151 @@ class App {
               console.log("DIE SZENE");
               console.log(this.room.children);
             */
-      //  console.log(myscene);
-       
+        //  console.log(myscene);
 
         
-        const zylinderLinksText = myscene.getObjectByName("viscosity").getObjectByName("Zylinder_links_text");
-        
-        const kugelText = myscene.getObjectByName("viscosity").getObjectByName("Kugel_text");
-        const variventtext = myscene.getObjectByName("viscosity").getObjectByName("Varivent-text");
-        const npttext = myscene.getObjectByName("viscosity").getObjectByName("NPT-text");
-        const flanschtext = myscene.getObjectByName("viscosity").getObjectByName("Prozessverbindung_text");
-        
-
-        const flanschzylinder = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Zylinder");
-        const flanschanschluss = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Anschluss");
-        const flansch = myscene.getObjectByName("viscosity").getObjectByName("Flansch");
-        const flanschbody = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Körper");
-
-        const flanschkugel = myscene.getObjectByName("viscosity").getObjectByName("Flansch-Kugel");
-        const standard = myscene.getObjectByName("viscosity").getObjectByName("Standard");
-        const standardanschluss = myscene.getObjectByName("viscosity").getObjectByName("Anschluss_Standard");
-        const standardbody = myscene.getObjectByName("viscosity").getObjectByName("Standard_Körper");
-
-        const nptanschluss = myscene.getObjectByName("viscosity").getObjectByName("NPT-Anschluss");
-        const nptzylinder = myscene.getObjectByName("viscosity").getObjectByName("NPT-Zylinder");
-        const nptbody = myscene.getObjectByName("viscosity").getObjectByName("NPT-Körper");
-        const npt = myscene.getObjectByName("viscosity").getObjectByName("NPT");
-
-
-        const water = myscene.getObjectByName("water");
-        const watersurf = myscene.getObjectByName("watersurf");
-        const thealarm = this.room.getObjectByName("thealarm");
-        const alarmlamp = this.room.getObjectByName("alarmlamp");
-
-        
-        
-        
-       
         zylinderLinksText.visible = false;
-       
+
         zylinderLinksText.material.opacity = 0;
 
-       
-       
-       
-       npttext.visible = false;
-       variventtext.visible = false;
+        npttext.visible = false;
+        variventtext.visible = false;
         kugelText.visible = false;
         flanschtext.visible = false;
-       
-        
-       // intersects[0].object.add(this.highlight);
-       // this.highlight.visible = true;
 
-         console.log(intersects[0]);
+        // intersects[0].object.add(this.highlight);
+        // this.highlight.visible = true;
+
+        //  console.log(intersects[0]);
         controller.children[0].scale.z = intersects[0].distance;
         //Buttons werden gedrückt
         // Button für Füllstand explode
-        if ( /*this.highlight.visible == true && */intersects[0].object.name == "cube1"){
-
-         /* if(intersects[0].object == water){
-            this.highlight.visible == false;
-          }
-          if(intersects[0].object == watersurf){
-            this.highlight.visible == false;
-          }*/
-         
+        if (intersects[0].object.name === "cube1") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
-          const downcubeleft = () => { new TWEEN.Tween(intersects[0].object.position)
+          // const downcubeleft = () => {
+         var tween1 = new TWEEN.Tween(this.cube.position)
               .to(
                 {
-                  y: 0.9,
+                  y: 0.6,
                 },
                 500
               )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
+               .easing(TWEEN.Easing.Cubic.Out)
+              // .to(
+              //   {
+              //     y: 0.7,
+              //   },
+              //   500
+              // )
+              // .easing(TWEEN.Easing.Cubic.Out)
 
-             
-            new TWEEN.Tween(this.cube2.position)
-              .to(
-                {
-                  y: 1,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
 
-              
-            //  (-2.530477523803711,1.6553013324737549,2.978816032409668 )
-              this.cube2.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
-            //console.log('controller links');
-          };
+          // };
 
-          const explosive = () => {
-            new TWEEN.Tween(water.position)
-              .to(
-                {
-                  y: 0
-                },
-                3000
-              )
-
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start()
-              .onComplete(function(){
-
-                new TWEEN.Tween(thealarm.material)
-                
-                .to({
-                    opacity: 0.9,
-                    
-                  },
-                  500)
-                  
-                
-                .easing(TWEEN.Easing.Cubic.Out)
-                .start();
-            
-                new TWEEN.Tween(alarmlamp)
-              .to({
-                decay: 0,
-                intensity: 10,
-                            
-              }, 500).easing(TWEEN.Easing.Cubic.Out)
-              
-              .start();
-              })
-
-            new TWEEN.Tween(watersurf.position)
+          // const explosive = () => {
+         var tween2 =   new TWEEN.Tween(water.position)
               .to(
                 {
                   y: 0,
                 },
                 3000
               )
+              
               .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-              }
+              
+          // const lamp =() =>{
+          var tween4 =  new TWEEN.Tween(thealarm.material.color)
+          
+            .to(
+              {
+                r: 1,
+                g: 0,
+                b: 0,
+              },
+              3000
+            )
+            
+            .easing(TWEEN.Easing.Cubic.Out)
+            
 
-                 
+       var tween5 =   new TWEEN.Tween(alarmlamp)
+       
+            .to(
+              {
+                decay: 0,
+                intensity: 10,
+              },
+              3000
+            )
+            
+            .easing(TWEEN.Easing.Cubic.Out)
+            
+          // }
+              
+         
+          // const shrink = () => {
+        var tween6 =    new TWEEN.Tween(water.position)
+              .to(
+                {
+                  y: -1,
+                },
+                3000
+              )
+              
+              .easing(TWEEN.Easing.Cubic.Out)
+
+
+         var tween7 =   new TWEEN.Tween(thealarm.material.color)
+              .to(
+                {
+                  r: 1,
+                  g: 0.5,
+                  b: 0.5,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Cubic.Out)
+
+
+         var tween8 =   new TWEEN.Tween(alarmlamp)
+              .to(
+                {
+                  decay: 5,
+                  intensity: 0,
+                },
+                500
+              )
+              .easing(TWEEN.Easing.Cubic.Out)
+
+
+         
+
+
+          var tween10 =  new TWEEN.Tween(this.cube.position)
+            .to(
+              {
+                y: 0.7,
+              },
+              500
+            )
+            .easing(TWEEN.Easing.Cubic.Out)
+
+          // };
+
+          tween1.chain(tween2);
+          tween2.chain(tween4, tween5)
+          // tween2.chain(tween4);
+          // tween4.chain(tween5);
+          tween5.chain(tween6, tween7, tween8);
+          // tween6.chain(tween7);
+          // tween7.chain(tween8);
+          tween8.chain(tween10);
+          
+          
+          tween1.start();
+          
 
           var animate = function () {
             requestAnimationFrame(animate);
@@ -823,129 +829,29 @@ class App {
             TWEEN.update();
             stats.update();
           };
+          animate()
+          // downcubeleft.start()
+          // downcubeleft.chain(explosive);
+          // explosive.chain(lamp);
+          // lamp.chain(shrink);
+          // shrink();
+          // animate();
 
-          animate();
-          downcubeleft();
-          explosive();
-     
-
+          
           // intersects[0].object.position.setY(-0.2);
         }
+      
+      
 
         // Button 2 für Füllstand shrink
-
-        if(water.position.y == 0){
-          console.log("TRIGGER GEHT")
-          const stats = Stats();
-          document.body.appendChild(stats.dom);
-          const shrink = () => { 
-            new TWEEN.Tween(water.position) 
-              .to(
-                {
-                  y: -1,
-                },
-                3000
-              )
-              
-
-              .easing(TWEEN.Easing.Cubic.Out)
-              
-              .start()
-              .onComplete(function(){
-                new TWEEN.Tween(thealarm.material)
-                
-                .to(
-                  {
-                    opacity: 0.2,
-                  },
-                  500
-                ).easing(TWEEN.Easing.Cubic.Out)
-                .start();
-            
-                new TWEEN.Tween(alarmlamp)
-              .to({
-                decay: 5,
-                intensity: 0,
-            
-              }, 500).easing(TWEEN.Easing.Cubic.Out)
-              .start();
-              })
-              
-
-            new TWEEN.Tween(watersurf.position)
-              .to(
-                {
-                  y: -1,
-                },
-                3000
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-
-              
-          };
+        if (watersurf.position == (2.5,0,-2.1)) {
           
-          var animate = function () { requestAnimationFrame(animate);
-            TWEEN.update();
-            stats.update();
-          };
-
-          animate();
-          shrink();
-         }
-         
-
-        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube2") {
-          const stats = Stats();
-          document.body.appendChild(stats.dom);
-
-          const downcuberight = () => { new TWEEN.Tween(intersects[0].object.position)
-              .to(
-                {
-                  y: 0.9,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-
-
-            new TWEEN.Tween(this.cube.position)
-              .to(
-                {
-                  y: 1,
-                },
-                500
-              )
-              .easing(TWEEN.Easing.Cubic.Out)
-              .start();
-              this.cube.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
-          };
-         
-
-          
-          
-
-          var animate = function () { requestAnimationFrame(animate);
-            TWEEN.update();
-            stats.update();
-          };
-
-          animate();
-          downcuberight();
-
-          
-
-          //intersects[0].object.position.setY(-0.2);
-
-          // this.cube.position.setY(0);
         }
+        
+
         // Button für Viscosität explode
-        if ( /*this.highlight.visible == true &&*/ intersects[0].object.name == "cube3") {
+        if (intersects[0].object.name ==="cube3"
+        ) {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -959,7 +865,6 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-             
 
             new TWEEN.Tween(this.cube4.position)
               .to(
@@ -971,16 +876,15 @@ class App {
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
 
-              this.cube4.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
-             
+            this.cube4.material = new THREE.MeshPhongMaterial({
+              color: new THREE.Color("rgb(0, 174, 255)"),
+              specular: new THREE.Color("rgb(255, 255, 255)"),
+              shininess: 40,
+            });
           };
 
-
-          const explosivevisco = () => { new TWEEN.Tween(flanschzylinder.position)
+          const explosivevisco = () => {
+            new TWEEN.Tween(flanschzylinder.position)
               .to(
                 {
                   y: 1.2, //1.6163400411605835
@@ -1082,9 +986,12 @@ class App {
           downcuberightvisco();
           explosivevisco();
         }
-      
+
         // Button für Viscosität shrink
-        if ( /*this.highlight.visible == true && */ intersects[0].object.name == "cube4") {
+        if (
+          /*this.highlight.visible == true && */ intersects[0].object.name ===
+          "cube4"
+        ) {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -1098,7 +1005,7 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-             
+
             new TWEEN.Tween(this.cube3.position)
               .to(
                 {
@@ -1108,14 +1015,12 @@ class App {
               )
               .easing(TWEEN.Easing.Cubic.Out)
               .start();
-              this.cube3.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color("rgb(0, 174, 255)"),
-                specular: new THREE.Color("rgb(255, 255, 255)"),
-                shininess: 40
-              });
-              
+            this.cube3.material = new THREE.MeshPhongMaterial({
+              color: new THREE.Color("rgb(0, 174, 255)"),
+              specular: new THREE.Color("rgb(255, 255, 255)"),
+              shininess: 40,
+            });
           };
-          
 
           const shrinkvisco = () => {
             new TWEEN.Tween(flanschzylinder.position)
@@ -1220,10 +1125,9 @@ class App {
           shrinkvisco();
         }
 
-
         // Mit der Auswahl des Bestandteils, öffnet sich auch ein Info fenster
 
-        if (intersects[0].object.name == "Flansch") {
+        if (intersects[0].object.name === "Flansch") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("FLANSCH AUSGEWÄHLT");
@@ -1248,7 +1152,7 @@ class App {
           animate();
           showflanschinfo();
         }
-        if (intersects[0].object.name == "Flansch-Kugel") {
+        if (intersects[0].object.name === "Flansch-Kugel") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("KUGEL AUSGEWÄHLT");
@@ -1273,7 +1177,7 @@ class App {
           animate();
           showkugelinfo();
         }
-        if (intersects[0].object.name == "Flansch-Zylinder") {
+        if (intersects[0].object.name === "Flansch-Zylinder") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("FLANSCH ZYLINDER AUSGEWÄHLT");
@@ -1298,7 +1202,7 @@ class App {
           animate();
           showflanschzylinderinfo();
         }
-        if (intersects[0].object.name == "NPT") {
+        if (intersects[0].object.name === "NPT") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("NPT AUSGEWÄHLT");
@@ -1324,7 +1228,7 @@ class App {
           shownptinfo();
         }
 
-        if (intersects[0].object.name == "Standard") {
+        if (intersects[0].object.name === "Standard") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
           console.log("VARIVENT AUSGEWÄHLT");
@@ -1349,17 +1253,19 @@ class App {
           animate();
           showvariventinfo();
         }
-        
+
         // Button für Informationen Visco
+      }
 
-      }}}
+      
+    }
+  }
 
-    // TELEPORT
- /*   if ( INTERSECTION ) marker.position.copy( INTERSECTION );
+  // TELEPORT
+  /*   if ( INTERSECTION ) marker.position.copy( INTERSECTION );
 
 				marker.visible = INTERSECTION !== undefined;
         */
-  
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -1370,15 +1276,9 @@ class App {
 
   render() {
     // TELEPORT
-   // this.INTERSECTION = undefined;
-
-
+    // this.INTERSECTION = undefined;
 
     this.stats.update();
-
-    
-    
-
 
     if (this.controllers) {
       const self = this;
@@ -1386,7 +1286,7 @@ class App {
         self.handleController(controller, this.scene);
       });
     }
-    
+
     this.renderer.render(this.scene, this.camera);
   }
 }
