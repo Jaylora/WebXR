@@ -8,13 +8,8 @@ import { GLTFLoader } from "../../node_modules/three/examples/jsm/loaders/GLTFLo
 import { RGBELoader } from "../../node_modules/three/examples/jsm/loaders/RGBELoader.js";
 import { BoxLineGeometry } from "../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js";
 import { Stats } from "../../node_modules/three/examples/jsm/libs/stats.module.js";
-import {
-  Constants as MotionControllerConstants,
-  fetchProfile,
-  MotionController,
-} from "../../node_modules/three/examples/jsm/libs/motion-controllers.module.js";
 import TWEEN from 'https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.5.0/dist/tween.esm.js';
-import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+
 
 class App {
   camera;
@@ -158,10 +153,7 @@ class App {
     this.cube.castShadow = true;
     this.cube.name = "cube1";
 
-    // this.cube2 = new THREE.Mesh(boxgeometry, cubematerial);
-    // this.room.add(this.cube2);
-    // this.cube2.castShadow = true;
-    // this.cube2.name = "cube2";
+
 
     this.cube3 = new THREE.Mesh(boxgeometry, cubematerial);
     this.room.add(this.cube3);
@@ -190,15 +182,10 @@ class App {
     this.room.add(this.alarm);
     this.alarm.name = "thealarm";
 
-    //Highlight für Würfel
-    /* this.highlight = new THREE.Mesh(
-      boxgeometry,
-      new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide, transparent: true, opacity: 0.5 })
-    );
-    this.highlight.scale.set(1.1, 1.1, 1.1);*/
+
 
     this.cube.position.set(1.75, 0.7, -0.9);
-    // this.cube2.position.set(1.75, 0.7, -0.4);
+
     this.cube3.position.set(-1.75, 0.7, 0.5);
     this.cube4.position.set(-1.75, 0.7, 1);
 
@@ -213,7 +200,7 @@ class App {
     this.scene.add(axesHelper);
 
     //Vitrinen
-    //const vitrinegeo = new THREE.BoxGeometry (1, 0.3, 3);
+
     const standmat = new THREE.MeshPhongMaterial({
       color: 0xb8cce0,
       emmissive: 0x9eccfa,
@@ -225,13 +212,13 @@ class App {
     const standgeo = new THREE.CylinderGeometry(0.25, 0.1, 0.8, 24, 6);
 
     const buttonstand = new THREE.Mesh(standgeo, standmat);
-    // const buttonstand2 = new THREE.Mesh(standgeo, standmat);
+
     const buttonstand3 = new THREE.Mesh(standgeo, standmat);
     const buttonstand4 = new THREE.Mesh(standgeo, standmat);
 
     this.scene.add(buttonstand, buttonstand3, buttonstand4);
     buttonstand.position.set(1.75, 0.2, -0.9);
-    // buttonstand2.position.set(1.75, 0.2, -0.4);
+
     buttonstand3.position.set(-1.75, 0.2, 0.5);
     buttonstand4.position.set(-1.75, 0.2, 1);
   }
@@ -248,20 +235,26 @@ class App {
 
     const sphereSize1 = 0.4;
 
-    const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
+    // const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
 
-    this.scene.add(alarmlamphelper);
+    // this.scene.add(alarmlamphelper);
     this.scene.add(alarmlamp);
     this.room.add(alarmlamp);
 
-    this.scene.add(hemilight);
-
+    
+    // const sphereSizeL = 0.4;
+    // const sphereSizeXL = 1;
+    // const lampHelper = new THREE.PointLightHelper(lamp, sphereSizeX)
+    // const lampbigHelper = new THREE.PointLightHelper(lampbig, sphereSizeXL)
+            
+    // this.scene.add(lampHelper, lampbigHelper);
     const light = new THREE.AmbientLight(0x404040); // soft white light
+    this.scene.add(hemilight, light);
 
     //HILFE
   }
   mytextures() {
-    //Lampenschirm
+
 
     //Boden Texture
     const myBodenTextureLoader = new THREE.TextureLoader();
@@ -296,7 +289,7 @@ class App {
 
     //CREATE PLANE
 
-    //Der Boden ist keine Lava
+// Texturierung des Models
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(11, 10, 10, 10),
       new THREE.MeshStandardMaterial({
@@ -306,8 +299,7 @@ class App {
         displacementMap: BodenHeightMap,
         displacementScale: 1,
         roughnessMap: BodenRoughnessMap,
-        roughness: 10,
-        //envMap: cubeRenderTarget.texture,
+        roughness: 10
       })
     );
     plane.position.x = 0;
@@ -316,8 +308,7 @@ class App {
     plane.rotation.set(1.56, 0, 0);
     plane.receiveShadow = true;
     this.scene.add(plane);
-    //plane.add(cubeCamera);
-    //plane.add(cubeCamera2);
+
 
     //Wand Texture
     const myTextureLoader = new THREE.TextureLoader();
@@ -349,12 +340,7 @@ class App {
     tilesRoughnessMap.wrapT = THREE.RepeatWrapping;
     tilesRoughnessMap.repeat.set(1, 1);
 
-    //const tilesAmbientOcclusionMap = myTextureLoader.load(
-    //  "textures/Stone_Floor_006_ambientOcclusion.jpg"
-    //);
-    //tilesAmbientOcclusionMap.wrapS = THREE.RepeatWrapping;
-    //tilesAmbientOcclusionMap.wrapT = THREE.RepeatWrapping;
-    //tilesAmbientOcclusionMap.repeat.set(25, 1);
+
 
     //Wand
     const wand2 = new THREE.Mesh(
@@ -367,7 +353,7 @@ class App {
         displacementScale: 0.05,
         roughnessMap: tilesRoughnessMap,
         roughness: 1,
-        //aoMap: tilesAmbientOcclusionMap,
+
       })
     );
     wand2.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
@@ -389,7 +375,7 @@ class App {
         displacementScale: 0.05,
         roughnessMap: tilesRoughnessMap,
         roughness: 1,
-        // aoMap: tilesAmbientOcclusionMap,
+        
       })
     );
     wand3.geometry.attributes.uv2 = wand2.geometry.attributes.uv;
@@ -411,7 +397,7 @@ class App {
         displacementScale: 0.05,
         roughnessMap: tilesRoughnessMap,
         roughness: 1,
-        // aoMap: tilesAmbientOcclusionMap,
+
       })
     );
 
@@ -433,7 +419,6 @@ class App {
         displacementScale: 0.05,
         roughnessMap: tilesRoughnessMap,
         roughness: 1,
-        // aoMap: tilesAmbientOcclusionMap,
       })
     );
 
@@ -462,9 +447,6 @@ class App {
   }
 
   loadMyFiles() {
-    var myModels = ["kabel-sonde.glb", "viscosity.glb"];
-    let me = this;
-
     new RGBELoader()
       .setPath("./textures/hdr/")
       .load("industrial_sunset_puresky_2k.hdr", function (texture) {
@@ -473,31 +455,21 @@ class App {
         me.scene.environment = texture;
       });
 
+    var myModels = ["kabel-sonde.glb", "viscosity.glb"];
+    let me = this;
     const myGLTFloader = new GLTFLoader();
-
     const meinpfad = "./textures/";
-
     for (let i = 0; i <= myModels.length - 1; i++) {
       var dateipfad = meinpfad + myModels[i];
-
       myGLTFloader.load(
         dateipfad,
-
+        
         function (gltf) {
-          //me.renderer.outputColorSpace = THREE.SRGBColorSpace;
-
           me.scene.add(gltf.scene);
           var mygltf = gltf.scene;
-
-          // mygltf.children[i].material.metalness = 0.2;
           gltf.scene; // THREE.Group
           gltf.cameras; // Array<THREE.Camera>
           gltf.asset; // Object
-
-          var saythename = mygltf.getObjectsByProperty(myModels[i]);
-          console.log("SAY THE NAME");
-          console.log(saythename);
-          console.log("SAY THE NAME");
 
           me.room.add(gltf.scene);
         },
@@ -525,10 +497,7 @@ class App {
 
     function onSelectEnd() {
       this.children[0].scale.z = 0;
-      //BAUSTELLE
-      /*self.highlight.visible = false;*/
-      /*
-      self.highlight2.visible = false;
+
      
 */
       this.userData.selectPressed = false;
@@ -584,12 +553,9 @@ class App {
 
   handleController(controller, myscene) {
     if (controller.userData.selectPressed) {
-      /* console.log("ROOM")
-      console.log(this.room);*/
-      // VR-Buttons
+
       controller.children[0].scale.z = 10;
-      /* this.scene.add(this.highlight);*/
-      /* this.scene.add(this.highlight2); */
+
       this.workingMatrix.identity().extractRotation(controller.matrixWorld);
 
       this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
@@ -597,7 +563,6 @@ class App {
         .set(0, 0, -1)
         .applyMatrix4(this.workingMatrix);
 
-      //const intersects2 = this.raycaster.intersectObject(this.room.children[0]); //cube
       const intersects = this.raycaster.intersectObjects(this.room.children); //cube2
 
       // TELEPORT
@@ -609,8 +574,7 @@ class App {
 
 					} */
 
-      // console.log(this.room.children[0]);
-      // console.log(intersects);
+
       const zylinderLinksText = myscene
       .getObjectByName("viscosity")
       .getObjectByName("Zylinder_links_text");
@@ -671,13 +635,7 @@ class App {
     const alarmlamp = this.room.getObjectByName("alarmlamp");
 
       if (intersects.length > 0) {
-        /*  console.log("DIE SZENE");
-              
-              console.log(myscene.children[47]);            
-              console.log("DIE SZENE");
-              console.log(this.room.children);
-            */
-        //  console.log(myscene);
+
 
         
         zylinderLinksText.visible = false;
@@ -689,10 +647,7 @@ class App {
         kugelText.visible = false;
         flanschtext.visible = false;
 
-        // intersects[0].object.add(this.highlight);
-        // this.highlight.visible = true;
 
-        //  console.log(intersects[0]);
         controller.children[0].scale.z = intersects[0].distance;
         //Buttons werden gedrückt
         // Button für Füllstand explode
@@ -700,7 +655,7 @@ class App {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
-          // const downcubeleft = () => {
+
          var tween1 = new TWEEN.Tween(this.cube.position)
               .to(
                 {
@@ -709,18 +664,10 @@ class App {
                 500
               )
                .easing(TWEEN.Easing.Cubic.Out)
-              // .to(
-              //   {
-              //     y: 0.7,
-              //   },
-              //   500
-              // )
-              // .easing(TWEEN.Easing.Cubic.Out)
 
 
-          // };
 
-          // const explosive = () => {
+
          var tween2 =   new TWEEN.Tween(water.position)
               .to(
                 {
@@ -731,7 +678,7 @@ class App {
               
               .easing(TWEEN.Easing.Cubic.Out)
               
-          // const lamp =() =>{
+
           var tween4 =  new TWEEN.Tween(thealarm.material.color)
           
             .to(
@@ -757,11 +704,7 @@ class App {
             )
             
             .easing(TWEEN.Easing.Cubic.Out)
-            
-          // }
-              
-         
-          // const shrink = () => {
+
         var tween6 =    new TWEEN.Tween(water.position)
               .to(
                 {
@@ -808,15 +751,13 @@ class App {
             )
             .easing(TWEEN.Easing.Cubic.Out)
 
-          // };
+
 
           tween1.chain(tween2);
           tween2.chain(tween4, tween5)
-          // tween2.chain(tween4);
-          // tween4.chain(tween5);
+
           tween5.chain(tween6, tween7, tween8);
-          // tween6.chain(tween7);
-          // tween7.chain(tween8);
+
           tween8.chain(tween10);
           
           
@@ -830,26 +771,20 @@ class App {
             stats.update();
           };
           animate()
-          // downcubeleft.start()
-          // downcubeleft.chain(explosive);
-          // explosive.chain(lamp);
-          // lamp.chain(shrink);
-          // shrink();
-          // animate();
+
 
           
-          // intersects[0].object.position.setY(-0.2);
+
         }
       
       
 
-        // Button 2 für Füllstand shrink
+
         if (watersurf.position == (2.5,0,-2.1)) {
           
         }
         
 
-        // Button für Viscosität explode
         if (intersects[0].object.name ==="cube3"
         ) {
           const stats = Stats();
@@ -887,7 +822,7 @@ class App {
             new TWEEN.Tween(flanschzylinder.position)
               .to(
                 {
-                  y: 1.2, //1.6163400411605835
+                  y: 1.2, 
                 },
                 500
               )
@@ -897,7 +832,7 @@ class App {
             new TWEEN.Tween(flanschanschluss.position)
               .to(
                 {
-                  y: 1.8, //1.6163431406021118
+                  y: 1.8, 
                 },
                 500
               )
@@ -907,7 +842,7 @@ class App {
             new TWEEN.Tween(flansch.position)
               .to(
                 {
-                  y: 1.4, //1.6163431406021118
+                  y: 1.4, 
                 },
                 500
               )
@@ -917,7 +852,7 @@ class App {
             new TWEEN.Tween(flanschkugel.position)
               .to(
                 {
-                  y: 1.2, //1.6163431406021118
+                  y: 1.2, 
                 },
                 500
               )
@@ -927,7 +862,7 @@ class App {
             new TWEEN.Tween(standardanschluss.position)
               .to(
                 {
-                  y: 1.8, //1.6163431406021118
+                  y: 1.8, 
                 },
                 500
               )
@@ -937,7 +872,7 @@ class App {
             new TWEEN.Tween(standard.position)
               .to(
                 {
-                  y: 1.4, //1.6163431406021118
+                  y: 1.4, 
                 },
                 500
               )
@@ -947,7 +882,7 @@ class App {
             new TWEEN.Tween(nptanschluss.position)
               .to(
                 {
-                  y: 1.8, //1.6163431406021118
+                  y: 1.8, 
                 },
                 500
               )
@@ -957,7 +892,7 @@ class App {
             new TWEEN.Tween(nptzylinder.position)
               .to(
                 {
-                  y: 1.2, //1.6163431406021118
+                  y: 1.2, 
                 },
                 500
               )
@@ -967,7 +902,7 @@ class App {
             new TWEEN.Tween(npt.position)
               .to(
                 {
-                  y: 1.4, //1.6163431406021118
+                  y: 1.4, 
                 },
                 500
               )
@@ -988,10 +923,7 @@ class App {
         }
 
         // Button für Viscosität shrink
-        if (
-          /*this.highlight.visible == true && */ intersects[0].object.name ===
-          "cube4"
-        ) {
+        if (intersects[0].object.name ==="cube4") {
           const stats = Stats();
           document.body.appendChild(stats.dom);
 
@@ -1026,7 +958,7 @@ class App {
             new TWEEN.Tween(flanschzylinder.position)
               .to(
                 {
-                  y: 1.6163, //1.6163400411605835
+                  y: 1.6163, 
                 },
                 500
               )
@@ -1036,7 +968,7 @@ class App {
             new TWEEN.Tween(flanschanschluss.position)
               .to(
                 {
-                  y: 1.6163, //1.6163431406021118
+                  y: 1.6163, 
                 },
                 500
               )
@@ -1046,7 +978,7 @@ class App {
             new TWEEN.Tween(flansch.position)
               .to(
                 {
-                  y: 1.6163, //1.6163431406021118
+                  y: 1.6163, 
                 },
                 500
               )
@@ -1056,7 +988,7 @@ class App {
             new TWEEN.Tween(flanschkugel.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
@@ -1066,7 +998,7 @@ class App {
             new TWEEN.Tween(standardanschluss.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
@@ -1076,7 +1008,7 @@ class App {
             new TWEEN.Tween(standard.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
@@ -1086,7 +1018,7 @@ class App {
             new TWEEN.Tween(nptanschluss.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
@@ -1096,7 +1028,7 @@ class App {
             new TWEEN.Tween(nptzylinder.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
@@ -1106,7 +1038,7 @@ class App {
             new TWEEN.Tween(npt.position)
               .to(
                 {
-                  y: 1.616, //1.6163431406021118
+                  y: 1.616, 
                 },
                 500
               )
