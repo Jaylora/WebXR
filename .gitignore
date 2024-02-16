@@ -1,1 +1,2 @@
-src/textures/kabel-sonde.glb
+*.glb
+/src/textures

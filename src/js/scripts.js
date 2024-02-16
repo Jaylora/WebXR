@@ -196,8 +196,8 @@ class App {
     this.alarm.position.set(2.8, 2.31, -2.4);
 
     //HILFE
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
+    // const axesHelper = new THREE.AxesHelper(5);
+    // this.scene.add(axesHelper);
 
     //Vitrinen
 
@@ -235,9 +235,9 @@ class App {
 
     const sphereSize1 = 0.4;
 
-    // const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
+    const alarmlamphelper = new THREE.PointLightHelper(alarmlamp, sphereSize1);
 
-    // this.scene.add(alarmlamphelper);
+    this.scene.add(alarmlamphelper);
     this.scene.add(alarmlamp);
     this.room.add(alarmlamp);
 
@@ -481,6 +481,7 @@ class App {
         }
       );
     }
+    console.log(this.scene)
   }
 
   setupXR() {
@@ -1220,6 +1221,7 @@ class App {
     }
 
     this.renderer.render(this.scene, this.camera);
+    
   }
 }
 
