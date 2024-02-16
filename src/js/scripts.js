@@ -259,28 +259,28 @@ class App {
     //Boden Texture
     const myBodenTextureLoader = new THREE.TextureLoader();
     const BodenBaseColor = myBodenTextureLoader.load(
-      "textures/boden/laminate_floor_02_diff_4k.jpg"
+      "./src/textures/boden/laminate_floor_02_diff_4k.jpg"
     );
     BodenBaseColor.wrapS = THREE.RepeatWrapping;
     BodenBaseColor.wrapT = THREE.RepeatWrapping;
     BodenBaseColor.repeat.set(5, 5);
 
     const BodenNormalMap = myBodenTextureLoader.load(
-      "textures/boden/laminate_floor_02_nor_gl_4k.jpg"
+      "./src/textures/boden/laminate_floor_02_nor_gl_4k.jpg"
     );
     BodenNormalMap.wrapS = THREE.RepeatWrapping;
     BodenNormalMap.wrapT = THREE.RepeatWrapping;
     BodenNormalMap.repeat.set(5, 5);
 
     const BodenHeightMap = myBodenTextureLoader.load(
-      "textures/boden/laminate_floor_02_disp_4k.png"
+      "./src/textures/boden/laminate_floor_02_disp_4k.png"
     );
     BodenHeightMap.wrapS = THREE.RepeatWrapping;
     BodenHeightMap.wrapT = THREE.RepeatWrapping;
     BodenHeightMap.repeat.set(5, 5);
 
     const BodenRoughnessMap = myBodenTextureLoader.load(
-      "textures/boden/laminate_floor_02_rough_4k.jpg"
+      "./src/textures/boden/laminate_floor_02_rough_4k.jpg"
     );
     BodenRoughnessMap.wrapS = THREE.RepeatWrapping;
     BodenRoughnessMap.wrapT = THREE.RepeatWrapping;
@@ -313,28 +313,28 @@ class App {
     //Wand Texture
     const myTextureLoader = new THREE.TextureLoader();
     const tilesBaseColor = myTextureLoader.load(
-      "textures/wand/beige_wall_001_diff_4k.jpg"
+      "./src/textures/wand/beige_wall_001_diff_4k.jpg"
     );
     tilesBaseColor.wrapS = THREE.RepeatWrapping;
     tilesBaseColor.wrapT = THREE.RepeatWrapping;
     tilesBaseColor.repeat.set(1, 1);
 
     const tilesNormalMap = myTextureLoader.load(
-      "textures/wand/beige_wall_001_nor_gl_4k.exr"
+      "./src/textures/wand/beige_wall_001_nor_gl_4k.exr"
     );
     tilesNormalMap.wrapS = THREE.RepeatWrapping;
     tilesNormalMap.wrapT = THREE.RepeatWrapping;
     tilesNormalMap.repeat.set(1, 1);
 
     const tilesHeightMap = myTextureLoader.load(
-      "textures/wand/beige_wall_001_disp_4k.png"
+      "./src/textures/wand/beige_wall_001_disp_4k.png"
     );
     tilesHeightMap.wrapS = THREE.RepeatWrapping;
     tilesHeightMap.wrapT = THREE.RepeatWrapping;
     tilesHeightMap.repeat.set(1, 1);
 
     const tilesRoughnessMap = myTextureLoader.load(
-      "textures/wand/beige_wall_001_rough_4k.jpg"
+      "./src/textures/wand/beige_wall_001_rough_4k.jpg"
     );
     tilesRoughnessMap.wrapS = THREE.RepeatWrapping;
     tilesRoughnessMap.wrapT = THREE.RepeatWrapping;
@@ -448,7 +448,7 @@ class App {
 
   loadMyFiles() {
     new RGBELoader()
-      .setPath("./textures/hdr/")
+      .setPath("./src/textures/hdr/")
       .load("industrial_sunset_puresky_2k.hdr", function (texture) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         me.scene.background = texture;
@@ -458,7 +458,7 @@ class App {
     var myModels = ["kabel-sonde.glb", "viscosity.glb"];
     let me = this;
     const myGLTFloader = new GLTFLoader();
-    const meinpfad = "./textures/";
+    const meinpfad = "./src/textures/";
     for (let i = 0; i <= myModels.length - 1; i++) {
       var dateipfad = meinpfad + myModels[i];
       myGLTFloader.load(
@@ -499,7 +499,7 @@ class App {
       this.children[0].scale.z = 0;
 
      
-*/
+
       this.userData.selectPressed = false;
 
       // TELEPORT
